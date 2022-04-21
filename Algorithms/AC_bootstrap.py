@@ -21,7 +21,7 @@ class ACBootstrap(PB):
             T=500, 
             sigma=None,
             n=1, 
-            maximize = False):
+            maximize = True):
 
         self.env = env
         self.model = model
@@ -53,13 +53,14 @@ class ACBootstrap(PB):
                 v = self.V(self.v_func.forward(torch.tensor(h0[n][0]).unsqueeze(0)), h0, n)
                 Q_n = sum([h0[t + k][3] for k in range(self.n)]) + v
                 loss_policy += Q_n * h0[t][3]
-                loss_value += torch.square(Q_n - self.V(self.v_func.forward(torch.tensor(h0[t][0]).unsqueeze(0)), h0, t))
+                loss_value += torch.square(Q_n.detach() - self.V(self.v_func.forward(torch.tensor(h0[t][0]).unsqueeze(0)), h0, t))
         
         # compute the epoch's gradient and update policy weights 
         self.model.train() 
         self.optimizer.zero_grad()
         loss_policy.backward()
         self.optimizer.step()
+
 
         # compute the epoch's gradient and update the value function weights  
         self.v_func.train()
