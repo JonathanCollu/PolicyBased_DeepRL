@@ -37,7 +37,7 @@ class NN(nn.Module):
 class MLP(NN):
     """ Simple multi-layer perceptron
     """
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, v_func = False):
         super(NN, self).__init__()
         
         self.hidden_layers = nn.Sequential(
@@ -46,8 +46,12 @@ class MLP(NN):
             nn.Linear(64, 64),
             nn.ReLU()
         )
-
-        self.output_layer = nn.Sequential(
-            nn.Linear(64, output_dim),
-            nn.Softmax(dim=1)
-        )
+        if not v_func:
+            self.output_layer = nn.Sequential(
+                nn.Linear(64, output_dim),
+                nn.Softmax(dim=1)
+            )
+        else: 
+             self.output_layer = nn.Sequential(
+                nn.Linear(64, output_dim)
+            )
