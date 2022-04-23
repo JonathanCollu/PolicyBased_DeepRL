@@ -3,7 +3,7 @@ from copy import deepcopy
 from Algorithms.PolicyBased import PolicyBased as PB
 class REINFORCE(PB):
 
-    def __init__(self, env, model, optimizer, epochs=10, M=5, T=500, gamma=0.9, sigma=None, baseline_sub=True):
+    def __init__(self, env, model, optimizer, epochs=10, M=5, T=500, gamma=0.9, sigma=None, baseline_sub=True, maximize=False):
         self.env = env
         self.model = model
         self.optimizer = optimizer
@@ -14,6 +14,7 @@ class REINFORCE(PB):
         self.sigma = sigma
         self.val_fun = None
         self.optim_value = None
+        self.maximize = maximize
         if baseline_sub:
             self.val_fun = deepcopy(model)
             self.optim_value = torch.optim.Adam(self.val_fun.parameters(), lr = 0.001)
@@ -32,7 +33,7 @@ class REINFORCE(PB):
                 if self.val_fun:
                     v = self.val_fun.forward(h0[t][0], True)
                     v = self.V(v, h0[t][1])
-                    R -= v
+                    R -= v.detach()
                     loss_value += torch.square(R.detach() - v)
                 loss += R * h0[t][3]
         

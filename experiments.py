@@ -14,7 +14,7 @@ def main():
     mlp = MLP(4,2)
     opt = torch.optim.Adam(mlp.parameters(), lr = 0.001)
 
-    algorithm = 'reinforce' # 'AC_bootstrap', 'reinforce' 
+    algorithm = 'AC_bootstrap' # 'AC_bootstrap', 'reinforce' 
     epochs = 1000
     M = 5
     T = 500
