@@ -1,18 +1,35 @@
 import torch
 import gym
-from Algorithms.REINFORCE import REINFORCE
-from Algorithms.AC_bootstrap import ACBootstrap
+from utils import *
 from Model import MLP
 
-env = gym.make('CartPole-v1')
-mlp = MLP(4,2)
-mlp_v = MLP(4, 2, v_func=True)
-opt = torch.optim.SGD(mlp.parameters(), lr = 0.001)
-opt_v = torch.optim.SGD(mlp_v.parameters(), lr = 0.001)
 
-reinforce = REINFORCE(env, mlp, opt)
-acb = ACBootstrap(env, mlp, opt, mlp_v, opt_v)
 
-#reinforce()
-acb()
-print(0)
+def main():
+    
+    n_repetitions = 10
+    smoothing_window = 3
+
+    env = gym.make('CartPole-v1')
+    mlp = MLP(4,2)
+    opt = torch.optim.Adam(mlp.parameters(), lr = 0.001)
+
+    algorithm = 'AC_bootstrap' # 'AC_bootstrap', 'reinforce' 
+    epochs = 1000
+    M = 5
+    T = 500
+    gamma = 0.9
+    sigma = None
+
+    optimum = 500
+
+    Plot = LearningCurvePlot(title = 'REINFORCE')  
+
+    l_c = average_over_repetitions(algorithm, env, mlp, opt, epochs=epochs, M=M, T=T, gamma=gamma, sigma=sigma, n_repetitions=n_repetitions, smoothing_window=smoothing_window)
+    Plot.add_curve(l_c,label=r'label')
+    Plot.add_hline(optimum, label="optimum")
+    Plot.save('Reinforce.png')
+    print(0)
+
+if __name__ == "__main__":
+    main()

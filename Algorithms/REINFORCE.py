@@ -14,17 +14,21 @@ class REINFORCE(PB):
 
     def epoch(self):
         loss = 0 # initialize the epoch gradient to 0
+        reward = 0
         for _ in range(self.M):
             s = self.env.reset()
             h0 = self.sample_trace(s)
             R = 0
-            for t in range(self.T - 1, -1, -1):
+            for t in range(len(h0) - 1, -1, -1):
                 R = h0[t][2] + self.gamma * R 
                 loss += R * h0[t][3]
+                reward += h0[t][2]
         
         # compute the epoch's gradient and update weights  
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+
+        return loss.item()/self.M, reward/self.M
 
     

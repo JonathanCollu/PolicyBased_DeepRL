@@ -37,7 +37,7 @@ class NN(nn.Module):
 class MLP(NN):
     """ Simple multi-layer perceptron
     """
-    def __init__(self, input_dim, output_dim, v_func = False):
+    def __init__(self, input_dim, output_dim):
         super(NN, self).__init__()
         
         self.hidden_layers = nn.Sequential(
@@ -46,12 +46,21 @@ class MLP(NN):
             nn.Linear(64, 64),
             nn.ReLU()
         )
-        if not v_func:
-            self.output_layer = nn.Sequential(
-                nn.Linear(64, output_dim),
-                nn.Softmax(dim=1)
-            )
-        else: 
-             self.output_layer = nn.Sequential(
-                nn.Linear(64, output_dim)
-            )
+
+        self.policy_layer = nn.Sequential(
+            nn.Linear(64, output_dim),
+            nn.Softmax(dim=1)
+        ) 
+        self.value_layer = nn.Sequential(
+            nn.Linear(64, output_dim)
+        )
+
+    def forward(self, x, v=False):
+        x = torch.tensor(x).unsqueeze(0)
+        x = self.hidden_layers(x)
+        if v : 
+            return self.value_layer(x)
+        return self.policy_layer(x)
+        
+    
+

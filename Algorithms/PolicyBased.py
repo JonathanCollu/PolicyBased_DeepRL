@@ -21,15 +21,22 @@ class PolicyBased:
         self.sigma = sigma
 
     def __call__(self):
-        
+        rewards = []
+        losses = []
         for epoch in range(self.epochs):
-            self.epoch()
-        return self.model # model or just its parameters?
+            l, r = self.epoch()
+            print(f"[{epoch+1}] Episode mean loss: {round(l, 4)} | Episode reward: {r}")
+            losses.append(l)
+            rewards.append(r)
+        return rewards
+        #return self.model # model or just its parameters?
 
     def select_action(self, s):
 
+        # TODO: implement entropy regularization
+
         # get the probability distribution of the actions
-        dist = self.model.forward(torch.tensor(s).unsqueeze(0))
+        dist = self.model.forward(s)
         # if the policy is deterministic add gaussian noise
         if self.sigma:
             dist += torch.normal(0, self.sigma)
@@ -46,11 +53,10 @@ class PolicyBased:
         for i in range(self.T):
             a, lp = self.select_action(s)
             s_next, r, done, _ = self.env.step(a)
-            trace.append((s, a, r, lp, s_next))
+            trace.append((s, a, r, lp))
             s = s_next
-            if done: s = self.env.reset()
+            if done: break
         return trace
-
 
     def epoch(self):
         pass
