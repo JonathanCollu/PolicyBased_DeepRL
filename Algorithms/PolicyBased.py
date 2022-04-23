@@ -12,13 +12,14 @@ class PolicyBased:
             - model : differentiable parametrized policy (model in pytorch)
             - env : Environment to train our model 
     """
-    def __init__(self, env, model, epochs, M, T, sigma):
+    def __init__(self, env, model, epochs, M, T, sigma, maximize):
         self.env = env
         self.model = model
         self.epochs = epochs
         self.M = M
         self.T = T
         self.sigma = sigma
+        self.maximize = maximize
 
     def __call__(self):
         rewards = []
@@ -29,7 +30,6 @@ class PolicyBased:
             losses.append(l)
             rewards.append(r)
         return rewards
-        #return self.model # model or just its parameters?
 
     def select_action(self, s):
 
@@ -37,6 +37,7 @@ class PolicyBased:
 
         # get the probability distribution of the actions
         dist = self.model.forward(s)
+
         # if the policy is deterministic add gaussian noise
         if self.sigma:
             dist += torch.normal(0, self.sigma)
@@ -48,15 +49,26 @@ class PolicyBased:
 
 
     def sample_trace(self, s):
-
+        reward = 0
         trace = []
         for i in range(self.T):
             a, lp = self.select_action(s)
             s_next, r, done, _ = self.env.step(a)
             trace.append((s, a, r, lp))
+            reward += r
             s = s_next
             if done: break
-        return trace
+        return trace, reward
+    
+    def V(self, v, samp_act):
+        # take the maximum Q_value or the Q_value of the action sampled
+        return torch.max(v[0]) if self.maximize else v[0][samp_act]
+
+    def train(self, model, loss, opt):
+        model.train() 
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
 
     def epoch(self):
         pass
