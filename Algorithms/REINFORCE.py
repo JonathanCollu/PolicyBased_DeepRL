@@ -3,7 +3,7 @@ from copy import deepcopy
 from Algorithms.PolicyBased import PolicyBased as PB
 class REINFORCE(PB):
 
-    def __init__(self, env, model, optimizer, epochs=10, M=5, T=500, gamma=0.9, sigma=None, baseline_sub=True, maximize=False):
+    def __init__(self, env, model, optimizer, epochs=10, M=5, T=500, gamma=0.9, sigma=None, baseline_sub=False, maximize=False):
         self.env = env
         self.model = model
         self.optimizer = optimizer
@@ -36,7 +36,7 @@ class REINFORCE(PB):
                     R -= v.detach()
                     loss_value += torch.square(R.detach() - v)
                 loss += R * h0[t][3]
-        
+        print(loss)
         # compute the epoch's gradient and update weights
         self.train(self.model, loss, self.optimizer)
         # if using baseline sub update value function model weights

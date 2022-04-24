@@ -45,8 +45,6 @@ def average_over_repetitions(
         env, 
         model,
         optimizer,
-        v_func=None,
-        optimizer_v=None,  
         epochs=100, 
         M=5, 
         T=500,

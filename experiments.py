@@ -1,7 +1,7 @@
 import torch
 import gym
 from utils import *
-from Model import MLP
+from Model import *
 
 
 
@@ -11,10 +11,10 @@ def main():
     smoothing_window = 3
 
     env = gym.make('CartPole-v1')
-    mlp = MLP(4,2)
+    mlp = MLPHybrid(4,2, Ansatz_mode=False) #MLP(4,2)
     opt = torch.optim.Adam(mlp.parameters(), lr = 0.001)
 
-    algorithm = 'AC_bootstrap' # 'AC_bootstrap', 'reinforce' 
+    algorithm = 'reinforce' # 'AC_bootstrap', 'reinforce' 
     epochs = 1000
     M = 5
     T = 500
