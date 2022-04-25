@@ -1,7 +1,6 @@
 import torch
 from torch.distributions import Categorical
 
-
 class PolicyBased:
     """ Parameters:
             - optimzer : optimization algorithm (torch optimizer)
@@ -40,31 +39,30 @@ class PolicyBased:
         dist = self.model.forward(s)
 
         # if the policy is deterministic add gaussian noise
-        if self.sigma is not None:
+        if self.sigma:
             dist += torch.normal(0, self.sigma)
-
         dist = Categorical(dist)
         action = dist.sample()
 
         #return action and -log(p(a))
         return action.item(), -dist.log_prob(action)
 
+
     def sample_trace(self, s):
         reward = 0
         trace = []
-        i = 0
-        while True:
-            if self.T is not None and i >= self.T:
-                break
-            i += 1
+        for i in range(self.T):
             a, lp = self.select_action(s)
             s_next, r, done, _ = self.env.step(a)
             trace.append((s, a, r, lp))
             reward += r
             s = s_next
             if done: break
-        trace.append((s, None, None, None))
         return trace, reward
+    
+    def V(self, v, samp_act):
+        # take the maximum Q_value or the Q_value of the action sampled
+        return torch.max(v[0]) if self.maximize else v[0][samp_act]
 
     def train(self, model, loss, opt):
         model.train() 
@@ -74,3 +72,5 @@ class PolicyBased:
 
     def epoch(self):
         pass
+
+    
