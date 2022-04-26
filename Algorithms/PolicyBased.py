@@ -9,17 +9,15 @@ class PolicyBased:
             - M : number of traces per epoch
             - T : trace length
             - gamma : discount factor
-            - sigma : std in case of deterministic policy (if None the policy is stochastic)
             - model : differentiable parametrized policy (model in pytorch)
             - env : Environment to train our model 
     """
-    def __init__(self, env, model, epochs, M, T, sigma, maximize):
+    def __init__(self, env, model, epochs, M, T, maximize):
         self.env = env
         self.model = model
         self.epochs = epochs
         self.M = M
         self.T = T
-        self.sigma = sigma
         self.maximize = maximize
 
     def __call__(self):
@@ -39,16 +37,12 @@ class PolicyBased:
         # get the probability distribution of the actions
         dist = self.model.forward(s)
 
-        # if the policy is deterministic add gaussian noise
-        if self.sigma is not None:
-            dist += torch.normal(0, self.sigma)
-
         # sample action from distribution
         dist = Categorical(dist)
         action = dist.sample()
 
-        #return action and -log(p(a))
-        return action.item(), -dist.log_prob(action)
+        #return action and actions distribution
+        return action, dist
 
     def sample_trace(self, s):
         reward = 0
@@ -58,9 +52,9 @@ class PolicyBased:
             if self.T is not None and i >= self.T:
                 break
             i += 1
-            a, lp = self.select_action(s)
-            s_next, r, done, _ = self.env.step(a)
-            trace.append((s, a, r, lp))
+            a, a_dist = self.select_action(s)
+            s_next, r, done, _ = self.env.step(a.item())
+            trace.append((s, a, r, a_dist))
             reward += r
             s = s_next
             if done: break

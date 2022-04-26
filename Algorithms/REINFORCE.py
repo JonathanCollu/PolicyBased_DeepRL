@@ -6,7 +6,7 @@ from Algorithms.PolicyBased import PolicyBased as PB
 class Reinforce(PB):
     def __init__(
             self, env, model, optimizer, epochs, M,
-            gamma, sigma, baseline_sub):
+            gamma, baseline_sub, entropy_reg, entropy_factor):
 
         self.env = env
         self.model = model
@@ -15,13 +15,14 @@ class Reinforce(PB):
         self.M = M
         self.T = None # get full episodes
         self.gamma = gamma
-        self.sigma = sigma
         if baseline_sub:
             self.val_fun = deepcopy(model)
             self.optim_value = torch.optim.Adam(self.val_fun.parameters(), lr = 0.001)
         else:
             self.val_fun = None
             self.optim_value = None
+        self.entropy_reg = entropy_reg
+        self.entropy_factor = entropy_factor
 
     def epoch(self):
         loss_policy = 0 # initialize the epoch gradient to 0
@@ -41,7 +42,9 @@ class Reinforce(PB):
                     v = v.detach()
                 else:
                     v = 0
-                loss_policy += (R - v) * h0[t][3]
+                loss_policy += (R - v) * -h0[t][3].log_prob(h0[t][1])
+                if self.entropy_reg:
+                    loss_policy += self.entropy_factor * -torch.sum([p * torch.log(p) for p in h0[t][3].probs][0])
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M

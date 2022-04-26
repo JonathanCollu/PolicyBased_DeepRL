@@ -43,7 +43,6 @@ class HybridFunction(torch.autograd.Function):
         
     @staticmethod
     def backward(ctx, grad_output):
-        print(1)
         input, _ = ctx.saved_tensors
         input_list = np.array(input.tolist())
         

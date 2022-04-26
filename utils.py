@@ -51,9 +51,10 @@ def average_over_repetitions(
         M=5,
         T=500,
         gamma=0.9,
-        sigma=None,
         n=5,
         baseline_sub = True,
+        entropy_reg = False,
+        entropy_factor = 0.2,
         n_repetitions=10,
         smoothing_window=51):
 
@@ -62,9 +63,9 @@ def average_over_repetitions(
     copy = deepcopy(model)
     for rep in range(n_repetitions): # Loop over repetitions
         if algorithm == "reinforce":
-            alg = Reinforce(env, model, optimizer, epochs, M, gamma, sigma, baseline_sub)
+            alg = Reinforce(env, model, optimizer, epochs, M, gamma, baseline_sub, entropy_reg, entropy_factor)
         elif algorithm == "AC_bootstrap":
-            alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, sigma, baseline_sub)
+            alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, entropy_reg, entropy_factor)
         model = deepcopy(copy)
 
         reward_results[rep] = alg()
