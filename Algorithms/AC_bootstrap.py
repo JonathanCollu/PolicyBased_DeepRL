@@ -34,26 +34,23 @@ class ACBootstrap(PB):
             h0, reward_t = self.sample_trace(s)
             reward += reward_t
             for t in range(len(h0) - 1): # -1 for skipping last state
-                n = min(self.n, (len(h0) - 2 - t)) # to avoid indexes out of bound
+                n = min(self.n, (len(h0) - 1 - t)) # to avoid indexes out of bound
                 v = self.val_fun.forward(h0[t + n][0], True)
-                v = self.V(v, h0[t + n][1]) # take the max value or the value corresponding to the action sampled
-                Q_n = sum([h0[t + k][3] for k in range(n - 1)]) + v
+                Q_n = sum([h0[t + k][2] for k in range(n - 1)]) + v
                 v_pred = self.val_fun.forward(h0[t][0], True)
-                v_pred = self.V(v_pred, h0[t][1])
-                
-                if not self.baseline_sub: 
-                    loss_policy += Q_n * h0[t][3]
+                if not self.baseline_sub:
+                    loss_policy += Q_n.detach() * h0[t][3]
                 else:
-                    loss_policy += (Q_n - v_pred.detach()) * h0[t][3]
+                    loss_policy += (Q_n.detach() - v_pred.detach()) * h0[t][3]
                 loss_value += torch.square(Q_n.detach() - v_pred)
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M
 
-        # compute the epoch's gradient and update policy head weights 
+        # compute the epoch gradient and update policy head weights 
         self.train(self.model, loss_policy, self.optimizer)
 
-        # compute the epoch's gradient and update the value head weights 
+        # compute the epoch gradient and update the value head weights 
         self.train(self.val_fun, loss_value, self.optim_value)
         
         #return traces average loss and reward

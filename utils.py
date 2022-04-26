@@ -52,7 +52,7 @@ def average_over_repetitions(
         T=500,
         gamma=0.9,
         sigma=None,
-        n=1,
+        n=5,
         baseline_sub = True,
         n_repetitions=10,
         smoothing_window=51):

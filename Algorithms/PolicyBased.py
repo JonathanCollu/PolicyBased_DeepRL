@@ -27,7 +27,7 @@ class PolicyBased:
         losses = []
         for epoch in range(self.epochs):
             l, r = self.epoch()
-            print(f"[{epoch+1}] Episode mean loss: {round(l, 4)} | Episode reward: {r}")
+            print(f"[{epoch+1}] Epoch mean loss: {round(l, 4)} | Epoch mean reward: {r}")
             losses.append(l)
             rewards.append(r)
         return rewards
@@ -43,6 +43,7 @@ class PolicyBased:
         if self.sigma is not None:
             dist += torch.normal(0, self.sigma)
 
+        # sample action from distribution
         dist = Categorical(dist)
         action = dist.sample()
 
@@ -67,9 +68,12 @@ class PolicyBased:
         return trace, reward
 
     def train(self, model, loss, opt):
-        model.train() 
+        # set model to train
+        model.train()
+        # compute gradient of loss
         opt.zero_grad()
         loss.backward()
+        # update weigths
         opt.step()
 
     def epoch(self):

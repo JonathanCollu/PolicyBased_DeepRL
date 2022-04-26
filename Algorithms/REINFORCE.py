@@ -45,7 +45,7 @@ class Reinforce(PB):
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M
-        # compute the epoch's gradient and update weights
+        # compute the epoch gradient and update weights
         self.train(self.model, loss_policy, self.optimizer)
         # if using baseline sub update value function model weights
         if self.val_fun is not None:

@@ -16,15 +16,16 @@ def main():
     epochs = 1000
     M = 5
     T = 500
+    n = 20
     gamma = 0.9
     sigma = None
-    baseline_sub = False
+    baseline_sub = True
 
     optimum = 500
 
     Plot = LearningCurvePlot(title = algorithm.upper())  
 
-    l_c = average_over_repetitions(algorithm, env, mlp, opt, epochs=epochs, M=M, T=T, gamma=gamma, sigma=sigma, baseline_sub=baseline_sub, n_repetitions=n_repetitions, smoothing_window=smoothing_window)
+    l_c = average_over_repetitions(algorithm, env, mlp, opt, epochs=epochs, M=M, T=T, gamma=gamma, sigma=sigma, n=n, baseline_sub=baseline_sub, n_repetitions=n_repetitions, smoothing_window=smoothing_window)
     Plot.add_curve(l_c,label=r'label')
     Plot.add_hline(optimum, label="optimum")
     Plot.save(algorithm + ".png")

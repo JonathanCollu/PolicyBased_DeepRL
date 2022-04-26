@@ -9,7 +9,7 @@ class MLP(nn.Module):
     """
     def __init__(self, input_dim, output_dim):
         super(MLP, self).__init__()
-        
+
         self.hidden_layers = nn.Sequential(
             nn.Linear(input_dim, 64),
             nn.ReLU(),
@@ -22,7 +22,8 @@ class MLP(nn.Module):
             nn.Softmax(dim=1)
         ) 
         self.value_layer = nn.Sequential(
-            nn.Linear(64, 1)
+            nn.Linear(64, 1),
+            nn.ReLU()
         )
 
     def forward(self, x, v=False):
