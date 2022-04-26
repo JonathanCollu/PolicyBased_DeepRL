@@ -1,0 +1,16 @@
+TODO:
+- add es
+- add device configurations
+- add training evals for saving best weights
+- add save of loss
+
+EXP 1:
+reinf
+reinf [base]
+ac [boot]
+ac [boot + base]
+
+EXP 2:
+best_exp1 [entropy reg]
+best_exp1 [quantum]
+best_exp1 [es]
