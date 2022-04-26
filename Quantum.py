@@ -21,10 +21,10 @@ class Ansatz():
         self.backend = qiskit.Aer.get_backend('aer_simulator')
         self.shots = shots
 
-    def run(self, params):
+    def run(self, X):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            assembled_qc = qiskit.assemble(self.circuit, shots=self.shots, parameter_binds = [{self.theta: param} for param in params])
+            assembled_qc = qiskit.assemble(self.circuit, shots=self.shots, parameter_binds = [{self.theta: x} for x in X])
             fxn()    
         result = self.backend.run(assembled_qc).result().get_counts()[0]
         # return probabilities for each action
