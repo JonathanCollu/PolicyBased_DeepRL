@@ -38,7 +38,8 @@ class MLP(nn.Module):
         x = torch.tensor(x).unsqueeze(0)
         x = self.hidden_layers(x)
         if v : return self.value_layer(x)
-        return self.policy_layer(x) if not self.quantum else self.quantum_layer(x)
+        elif self.quantum: return self.quantum_layer(x)
+        else: return self.policy_layer(x)
         
     
 
