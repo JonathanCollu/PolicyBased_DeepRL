@@ -16,6 +16,7 @@ class Ansatz():
         self.theta = qiskit.circuit.Parameter('theta')
         self.circuit.h(all_qubits)
         self.circuit.barrier()
+        self.circuit.rz(self.theta, all_qubits)
         self.circuit.ry(self.theta, all_qubits)
         self.circuit.measure_all()
         self.backend = qiskit.Aer.get_backend('aer_simulator')
