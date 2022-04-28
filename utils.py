@@ -1,11 +1,19 @@
 from copy import deepcopy
 import numpy as np
 import time
+import torch
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 from Algorithms.Reinforce import Reinforce
 from Algorithms.AC_bootstrap import ACBootstrap
 
+
+def argmax(x):
+    ''' Own variant of np.argmax with random tie breaking '''
+    try:
+        return torch.tensor(np.random.choice(torch.where(x == torch.max(x))[0]))
+    except:
+        return torch.argmax(x)
 
 class LearningCurvePlot:
     def __init__(self,title=None):
@@ -55,6 +63,10 @@ def average_over_repetitions(
         baseline_sub = True,
         entropy_reg = False,
         entropy_factor = 0.2,
+        val_fun=None, 
+        optimizer_v = None, 
+        run_name = None, 
+        device = None,
         n_repetitions=10,
         smoothing_window=51):
 
@@ -63,14 +75,14 @@ def average_over_repetitions(
     copy = deepcopy(model)
     for rep in range(n_repetitions): # Loop over repetitions
         if algorithm == "reinforce":
-            alg = Reinforce(env, model, optimizer, epochs, M, gamma, baseline_sub, entropy_reg, entropy_factor)
+            alg = Reinforce(env, model, optimizer, epochs, M, gamma, baseline_sub, 
+                entropy_reg, entropy_factor, val_fun, optimizer_v, run_name, device)
         elif algorithm == "AC_bootstrap":
-            alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, entropy_reg, entropy_factor)
-        model = deepcopy(copy)
-
+            alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, 
+                entropy_reg, entropy_factor, val_fun, optimizer_v, run_name, device)
         reward_results[rep] = alg()
         
     print("Running one setting takes {} minutes".format((time.time()-now)/60))
     learning_curve = np.mean(reward_results,axis=0) # average over repetitions
-    learning_curve = smooth(learning_curve,smoothing_window) # additional smoothing
+    #learning_curve = smooth(learning_curve,smoothing_window) # additional smoothing
     return learning_curve

@@ -34,8 +34,8 @@ class MLP(nn.Module):
             nn.ReLU()
         )
 
-    def forward(self, x, v=False):
-        x = torch.tensor(x).unsqueeze(0)
+    def forward(self, x, device, v=False):
+        x = torch.tensor(x, dtype=torch.float32, device=device).unsqueeze(0)
         x = self.hidden_layers(x)
         if v : return self.value_layer(x)
         elif self.quantum: return self.quantum_layer(x)

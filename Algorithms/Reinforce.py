@@ -6,23 +6,36 @@ from Algorithms.PolicyBased import PolicyBased as PB
 class Reinforce(PB):
     def __init__(
             self, env, model, optimizer, epochs, M,
-            gamma, baseline_sub, entropy_reg, entropy_factor):
+            gamma, baseline_sub, entropy_reg, entropy_factor,
+            val_fun=None, optimizer_v = None, run_name=None, device=None):
 
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
+        print(f"Computing on {self.device} device")
         self.env = env
-        self.model = model
+        self.model = model.to(device)
         self.optimizer = optimizer
         self.epochs = epochs
         self.M = M
         self.T = None # get full episodes
         self.gamma = gamma
         if baseline_sub:
-            self.val_fun = deepcopy(model)
-            self.optim_value = torch.optim.Adam(self.val_fun.parameters(), lr = 0.001)
+            if optimizer_v is None:
+                print('Another network is required')
+                exit()
+            if optimizer_v is None:
+                print('Another optimizer is required')
+                exit()
+            self.val_fun = val_fun
+            self.optim_value = optimizer_v
         else:
             self.val_fun = None
             self.optim_value = None
         self.entropy_reg = entropy_reg
         self.entropy_factor = entropy_factor
+        self.run_name = run_name
 
     def epoch(self):
         loss_policy = 0 # initialize the epoch gradient to 0
@@ -37,7 +50,7 @@ class Reinforce(PB):
             for t in range(len(h0) - 2, -1, -1):
                 R = h0[t][2] + self.gamma * R 
                 if self.val_fun is not None:
-                    v = self.val_fun.forward(h0[t][0], True)
+                    v = self.val_fun.forward(h0[t][0], self.device, True)
                     loss_value += torch.square(R - v)
                     v = v.detach()
                 else:
@@ -54,4 +67,4 @@ class Reinforce(PB):
         if self.val_fun is not None:
             self.train(self.val_fun, loss_value, self.optim_value) 
         #return traces average loss_policy and reward
-        return loss_policy.item(), reward
+        return loss_policy.item(),loss_value.item(), reward
