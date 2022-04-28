@@ -6,19 +6,10 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 from Algorithms.Reinforce import Reinforce
 from Algorithms.AC_bootstrap import ACBootstrap
-
-
-def argmax(x):
-    ''' Own variant of np.argmax with random tie breaking '''
-    try:
-        return torch.tensor(np.random.choice(torch.where(x == torch.max(x))[0]))
-    except:
-        return torch.argmax(x)
-
 class LearningCurvePlot:
     def __init__(self,title=None):
         self.fig,self.ax = plt.subplots()
-        self.ax.set_xlabel("Time")
+        self.ax.set_xlabel("Epochs")
         self.ax.set_ylabel("Reward")
         if title is not None:
             self.ax.set_title(title)

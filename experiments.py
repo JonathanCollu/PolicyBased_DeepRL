@@ -4,8 +4,6 @@ import gym
 from utils import *
 from Model import *
 
-
-
 def main():
     parser = argparse.ArgumentParser()
     

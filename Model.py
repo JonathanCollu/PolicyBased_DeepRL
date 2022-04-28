@@ -3,6 +3,12 @@ from torch import nn
 import numpy as np
 from Quantum import Hybrid
 
+def argmax(x):
+    ''' Own variant of np.argmax with random tie breaking '''
+    try:
+        return torch.tensor(np.random.choice(torch.where(x == torch.max(x))[0]))
+    except:
+        return torch.argmax(x)
 
 class MLP(nn.Module):
     """ Simple multi-layer perceptron

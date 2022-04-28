@@ -2,9 +2,7 @@ import os
 import torch
 import numpy as np
 from torch.distributions import Categorical
-from utils import argmax
-
-
+from Model import argmax
 class PolicyBased:
     """ Parameters:
             - optimzer : optimization algorithm (torch optimizer)
@@ -61,7 +59,7 @@ class PolicyBased:
                         best_ep = epoch
         if self.run_name is not None:
             # save steps per episode
-            np.save(self.run_name, np.array(losses_p, losses_v, rewards))
+            np.save(self.run_name, np.array([losses_p, losses_v, rewards]))
         return rewards
 
     def evaluate(self, trials):
