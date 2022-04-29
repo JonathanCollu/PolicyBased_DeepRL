@@ -43,9 +43,6 @@ class MLP(nn.Module):
     def forward(self, x, device, v=False):
         x = torch.tensor(x, dtype=torch.float32, device=device).unsqueeze(0)
         x = self.hidden_layers(x)
-        if v : return self.value_layer(x)
+        if v : return self.value_layer(x)[0]
         elif self.quantum: return self.quantum_layer(x)
         else: return self.policy_layer(x)
-        
-    
-

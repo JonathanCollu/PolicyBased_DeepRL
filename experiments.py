@@ -17,7 +17,7 @@ def main():
     parser.add_argument('-optim_lr_v', action='store', type=float, default=1e-3)
     parser.add_argument('-device', action='store', type=str, default="cuda")
 
-    # parse DQL parameters
+    # parse algorithm parameters
     parser.add_argument('-alg', action='store', type=str, default='reinforce')
     parser.add_argument('-traces', action='store', type=int, default=5)
     parser.add_argument('-trace_len', action='store', type=int, default=500)
@@ -38,21 +38,27 @@ def main():
     smoothing_window = 3
 
     env = gym.make("CartPole-v1")
+    
     mlp_policy = MLP(4,2, quantum=args.quantum)
-    mlp_value = deepcopy(mlp_policy)
     opt_policy = optimizers[args.optimizer](mlp_policy.parameters(), args.optim_lr)
-    opt_value = optimizers[args.optimizer_v](mlp_value.parameters(), args.optim_lr_v)
+    if args.baseline or args.alg == "AC_bootstrap":
+        mlp_value = deepcopy(mlp_policy)
+        opt_value = optimizers[args.optimizer_v](mlp_value.parameters(), args.optim_lr_v)
+    else:
+        mlp_value = None
+        opt_value = None
+    
     run_name = "exp_results/" + args.run_name
 
     optimum = 500
 
-    Plot = LearningCurvePlot(title = args.alg.upper())  
+    Plot = LearningCurvePlot(title = args.alg.upper())
 
     l_c = average_over_repetitions(
         args.alg, env, mlp_policy, opt_policy, epochs=args.epochs,
-        M=args.traces, T=args.trace_len, gamma=args.gamma, n=args.n, 
-        baseline_sub=args.baseline, entropy_reg=args.entropy, 
-        entropy_factor=args.entropy_factor, val_fun=mlp_value, 
+        M=args.traces, T=args.trace_len, gamma=args.gamma, n=args.n,
+        baseline_sub=args.baseline, entropy_reg=args.entropy,
+        entropy_factor=args.entropy_factor, model_v=mlp_value,
         optimizer_v = opt_value, run_name = run_name, device = args.device,
         n_repetitions=n_repetitions, smoothing_window=smoothing_window)
     Plot.add_curve(l_c,label=r'label')

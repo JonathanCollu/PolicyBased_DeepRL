@@ -1,8 +1,11 @@
 import os
+from regex import F
 import torch
 import numpy as np
 from torch.distributions import Categorical
 from Model import argmax
+
+
 class PolicyBased:
     """ Parameters:
             - optimzer : optimization algorithm (torch optimizer)
@@ -25,6 +28,16 @@ class PolicyBased:
             self.device = device
         print(f"Computing on {self.device} device")
         self.model = model.to(device)
+
+    def set_device(self, device):
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
+        print(f"Computing on {self.device} device")
+        self.model.to(device)
+        if self.model_v is not None:
+            self.model_v.to(device)
 
     def __call__(self):
         rewards = []
@@ -77,7 +90,6 @@ class PolicyBased:
         return np.mean(r_ep)
 
     def select_action(self, s):
-
         # get the probability distribution of the actions
         dist = self.model.forward(s, self.device)
 

@@ -6,40 +6,26 @@ from Algorithms.PolicyBased import PolicyBased as PB
 class Reinforce(PB):
     def __init__(
             self, env, model, optimizer, epochs, M,
-            gamma, baseline_sub, entropy_reg, entropy_factor,
-            val_fun=None, optimizer_v = None, run_name=None, device=None):
+            gamma, entropy_reg, entropy_factor,
+            model_v, optimizer_v, run_name, device):
 
-        if device is None:
-            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        else:
-            self.device = device
-        print(f"Computing on {self.device} device")
         self.env = env
-        self.model = model.to(device)
+        self.model = model
+        self.model_v = model_v
         self.optimizer = optimizer
+        self.optim_value = optimizer_v
+        self.set_device(device)
         self.epochs = epochs
         self.M = M
         self.T = None # get full episodes
         self.gamma = gamma
-        if baseline_sub:
-            if optimizer_v is None:
-                print('Another network is required')
-                exit()
-            if optimizer_v is None:
-                print('Another optimizer is required')
-                exit()
-            self.val_fun = val_fun
-            self.optim_value = optimizer_v
-        else:
-            self.val_fun = None
-            self.optim_value = None
         self.entropy_reg = entropy_reg
         self.entropy_factor = entropy_factor
         self.run_name = run_name
 
     def epoch(self):
-        loss_policy = 0 # initialize the epoch gradient to 0
-        loss_value = 0 # initialize the epoch loss_value to 0
+        loss_policy = torch.tensor([0], dtype=torch.float64, device=self.device) 
+        loss_value = torch.tensor([0], dtype=torch.float64, device=self.device)
         reward = 0
         for _ in range(self.M):
             s = self.env.reset()
@@ -48,9 +34,9 @@ class Reinforce(PB):
             R = 0
             # len-2 reason: -1 for having 0..len-1 and -1 for skipping last state
             for t in range(len(h0) - 2, -1, -1):
-                R = h0[t][2] + self.gamma * R 
-                if self.val_fun is not None:
-                    v = self.val_fun.forward(h0[t][0], self.device, True)
+                R = h0[t][2] + self.gamma * R
+                if self.model_v is not None:
+                    v = self.model_v.forward(h0[t][0], self.device, True)
                     loss_value += torch.square(R - v)
                     v = v.detach()
                 else:
@@ -64,7 +50,7 @@ class Reinforce(PB):
         # compute the epoch gradient and update weights
         self.train(self.model, loss_policy, self.optimizer)
         # if using baseline sub update value function model weights
-        if self.val_fun is not None:
-            self.train(self.val_fun, loss_value, self.optim_value) 
+        if self.model_v is not None:
+            self.train(self.model_v, loss_value, self.optim_value) 
         #return traces average loss_policy and reward
-        return loss_policy.item(),loss_value.item(), reward
+        return loss_policy.item(), loss_value.item(), reward

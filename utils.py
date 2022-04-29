@@ -6,6 +6,8 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 from Algorithms.Reinforce import Reinforce
 from Algorithms.AC_bootstrap import ACBootstrap
+
+
 class LearningCurvePlot:
     def __init__(self,title=None):
         self.fig,self.ax = plt.subplots()
@@ -54,7 +56,7 @@ def average_over_repetitions(
         baseline_sub = True,
         entropy_reg = False,
         entropy_factor = 0.2,
-        val_fun=None, 
+        model_v=None, 
         optimizer_v = None, 
         run_name = None, 
         device = None,
@@ -63,17 +65,16 @@ def average_over_repetitions(
 
     reward_results = np.empty([n_repetitions, epochs]) # Result array
     now = time.time()
-    copy = deepcopy(model)
-    for rep in range(n_repetitions): # Loop over repetitions
-        if algorithm == "reinforce":
-            alg = Reinforce(env, model, optimizer, epochs, M, gamma, baseline_sub, 
-                entropy_reg, entropy_factor, val_fun, optimizer_v, run_name, device)
-        elif algorithm == "AC_bootstrap":
-            alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, 
-                entropy_reg, entropy_factor, val_fun, optimizer_v, run_name, device)
-        reward_results[rep] = alg()
+    if algorithm == "reinforce":
+        alg = Reinforce(env, model, optimizer, epochs, M, gamma,
+            entropy_reg, entropy_factor, model_v, optimizer_v, run_name, device)
+    elif algorithm == "AC_bootstrap":
+        alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, 
+            entropy_reg, entropy_factor, model_v, optimizer_v, run_name, device)
+    else:
+        print("Please select a valid model")
+        exit()
+    reward_results = alg()
         
     print("Running one setting takes {} minutes".format((time.time()-now)/60))
-    learning_curve = np.mean(reward_results,axis=0) # average over repetitions
-    #learning_curve = smooth(learning_curve,smoothing_window) # additional smoothing
-    return learning_curve
+    return reward_results
