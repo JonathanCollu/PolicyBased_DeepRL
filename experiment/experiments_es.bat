@@ -13,4 +13,5 @@ python experiments.py ^
 -gamma 0.9 ^
 -baseline ^
 -entropy ^
--entropy_factor 0.2
+-entropy_factor 0.2 ^
+-use_es

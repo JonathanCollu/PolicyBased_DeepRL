@@ -57,7 +57,8 @@ def average_over_repetitions(
         entropy_reg = False,
         entropy_factor = 0.2,
         model_v=None, 
-        optimizer_v = None, 
+        optimizer_v = None,
+        use_es = False,
         run_name = None, 
         device = None,
         n_repetitions=10,
@@ -67,10 +68,10 @@ def average_over_repetitions(
     now = time.time()
     if algorithm == "reinforce":
         alg = Reinforce(env, model, optimizer, epochs, M, gamma,
-            entropy_reg, entropy_factor, model_v, optimizer_v, run_name, device)
+            entropy_reg, entropy_factor, model_v, optimizer_v, use_es, run_name, device)
     elif algorithm == "AC_bootstrap":
         alg = ACBootstrap(env, model, optimizer, epochs, M, T, n, baseline_sub, 
-            entropy_reg, entropy_factor, model_v, optimizer_v, run_name, device)
+            entropy_reg, entropy_factor, model_v, optimizer_v, use_es, run_name, device)
     else:
         print("Please select a valid model")
         exit()

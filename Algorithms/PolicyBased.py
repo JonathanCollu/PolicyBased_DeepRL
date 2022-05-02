@@ -4,6 +4,10 @@ import torch
 import numpy as np
 from torch.distributions import Categorical
 from Model import argmax
+from ES_base_framework.EA import EA
+import ES_base_framework.Recombination as Recombination
+import ES_base_framework.Mutation as Mutation
+import ES_base_framework.Selection as Selection
 
 
 class PolicyBased:
@@ -16,11 +20,12 @@ class PolicyBased:
             - model : differentiable parametrized policy (model in pytorch)
             - env : Environment to train our model 
     """
-    def __init__(self, env, model, epochs, M, T, run_name=None, device=None):
+    def __init__(self, env, model, epochs, M, T, use_es, run_name, device):
         self.env = env
         self.epochs = epochs
         self.M = M
         self.T = T
+        self.use_es = use_es
         self.run_name = run_name
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -46,8 +51,38 @@ class PolicyBased:
         best_r_ep = 0
         best_avg = 0
         best_ep = 0
-        for epoch in range(self.epochs):
-            l_p, l_v, r = self.epoch()
+        # es configurations
+        es_rec = Recombination.Discrete()
+        es_mut = Mutation.IndividualSigma()
+        es_sel = Selection.PlusSelection()
+        es_eval = self.__class__.epoch
+        # start training
+        for i, epoch in enumerate(range(self.epochs)):
+            if self.use_es and ((i+1) % 25) == 0:
+                print("~~~~ Evolutionary Strategy Optimization ~~~~")
+                # es on value layer
+                es_value = EA(self, True, True, 100, 5, 40, 65, es_rec, es_mut, es_sel, es_eval, 1)
+                new_weights, l_p, l_v, r = es_value.run() 
+                for name, params in self.model.state_dict().items():
+                    if "value_layer" in name:
+                        if params.numel() == 1:
+                            weights = torch.tensor(new_weights[-1:])
+                        else:
+                            weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
+                        self.model.load_state_dict({name: weights}, strict=False)
+                # es on policy layer
+                # es_policy = EA(self, False, True, 15, 1, 2, 130, es_rec, es_mut, es_sel, es_eval, 1)
+                # new_weights, l_p, l_v, r = es_policy.run()
+                # for name, params in self.model.state_dict().items():
+                #     if "policy_layer" in name:
+                #         if params.numel() == 2:
+                #             weights = torch.tensor(new_weights[-2:])
+                #         else:
+                #             weights = torch.tensor(new_weights[:-2].reshape((2, 64)))
+                #         self.model.load_state_dict({name: weights}, strict=False)
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            else:
+                l_p, l_v, r = self.train_(*self.epoch())
             losses_p.append(l_p)
             losses_v.append(l_v)
             rewards.append(r)

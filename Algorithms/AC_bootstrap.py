@@ -1,5 +1,4 @@
 import torch
-from copy import deepcopy
 from Algorithms.PolicyBased import PolicyBased as PB
 
 
@@ -12,7 +11,7 @@ class ACBootstrap(PB):
     def __init__(
             self, env, model, optimizer, epochs,
             M, T, n, baseline_sub, entropy_reg, entropy_factor, 
-            model_v, optimizer_v, run_name, device):
+            model_v, optimizer_v, use_es, run_name, device):
 
         self.env = env
         self.model = model
@@ -27,6 +26,7 @@ class ACBootstrap(PB):
         self.baseline_sub = baseline_sub
         self.entropy_reg = entropy_reg
         self.entropy_factor = entropy_factor
+        self.use_es = use_es
         self.run_name = run_name
 
     def epoch(self):
@@ -52,7 +52,10 @@ class ACBootstrap(PB):
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M
+        
+        return loss_policy, loss_value, reward
 
+    def train_(self, loss_policy, loss_value, reward):
         # compute the epoch gradient and update policy head weights 
         self.train(self.model, loss_policy, self.optimizer)
 

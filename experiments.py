@@ -27,6 +27,7 @@ def main():
     parser.add_argument('-baseline', action='store_true')
     parser.add_argument('-entropy', action='store_true')
     parser.add_argument('-entropy_factor', action='store', type=float, default=0.2)
+    parser.add_argument('-use_es', action='store_true')
     args = parser.parse_args()
 
     optimizers = {  'adam': torch.optim.Adam,
@@ -39,7 +40,7 @@ def main():
 
     env = gym.make("CartPole-v1")
     
-    mlp_policy = MLP(4,2, quantum=args.quantum)
+    mlp_policy = MLP(4, 2, quantum=args.quantum)
     opt_policy = optimizers[args.optimizer](mlp_policy.parameters(), args.optim_lr)
     if args.baseline or args.alg == "AC_bootstrap":
         mlp_value = deepcopy(mlp_policy)
@@ -59,7 +60,7 @@ def main():
         M=args.traces, T=args.trace_len, gamma=args.gamma, n=args.n,
         baseline_sub=args.baseline, entropy_reg=args.entropy,
         entropy_factor=args.entropy_factor, model_v=mlp_value,
-        optimizer_v = opt_value, run_name = run_name, device = args.device,
+        optimizer_v=opt_value, use_es=args.use_es, run_name=run_name, device=args.device,
         n_repetitions=n_repetitions, smoothing_window=smoothing_window)
     Plot.add_curve(l_c,label=r'label')
     Plot.add_hline(optimum, label="optimum")

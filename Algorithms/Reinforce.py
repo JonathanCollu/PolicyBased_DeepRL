@@ -1,5 +1,4 @@
 import torch
-from copy import deepcopy
 from Algorithms.PolicyBased import PolicyBased as PB
 
 
@@ -7,7 +6,7 @@ class Reinforce(PB):
     def __init__(
             self, env, model, optimizer, epochs, M,
             gamma, entropy_reg, entropy_factor,
-            model_v, optimizer_v, run_name, device):
+            model_v, optimizer_v, use_es, run_name, device):
 
         self.env = env
         self.model = model
@@ -21,6 +20,7 @@ class Reinforce(PB):
         self.gamma = gamma
         self.entropy_reg = entropy_reg
         self.entropy_factor = entropy_factor
+        self.use_es = use_es
         self.run_name = run_name
 
     def epoch(self):
@@ -47,10 +47,16 @@ class Reinforce(PB):
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M
+        
+        return loss_policy, loss_value, reward
+        
+    def train_(self, loss_policy, loss_value, reward):
         # compute the epoch gradient and update weights
         self.train(self.model, loss_policy, self.optimizer)
+
         # if using baseline sub update value function model weights
         if self.model_v is not None:
             self.train(self.model_v, loss_value, self.optim_value) 
+        
         #return traces average loss_policy and reward
         return loss_policy.item(), loss_value.item(), reward
