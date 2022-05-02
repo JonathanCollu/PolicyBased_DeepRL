@@ -23,9 +23,21 @@ class EA:
         self.selection = selection
         self.evaluation = evaluation
         self.verbose=verbose
+
+        layers_shape = []
+        init_parent = []
+        for name, params in self.rl_alg.model.state_dict().items():
+            if self.rl_alg.use_es == 0 and self.value_layer and "value_layer" not in name:
+                continue
+            elif self.rl_alg.use_es == 1 and not self.value_layer and "policy_layer" not in name:
+                continue
+            layers_shape.append(list(params.shape))
+            init_parent.append(params.cpu().numpy().flatten())
+            
         self.parents = Population(  self.parents_size,
                                     self.individual_size,
-                                    mutation)
+                                    mutation,
+                                    np.hstack(init_parent))
         self.offspring = Population(self.offspring_size, 
                                     self.individual_size, 
                                     mutation)

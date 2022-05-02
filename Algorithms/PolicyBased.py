@@ -1,5 +1,4 @@
 import os
-from regex import F
 import torch
 import numpy as np
 from torch.distributions import Categorical
@@ -56,30 +55,48 @@ class PolicyBased:
         es_mut = Mutation.IndividualSigma()
         es_sel = Selection.PlusSelection()
         es_eval = self.__class__.epoch
+        num_params = sum(param.numel() for param in self.model.parameters())
         # start training
         for i, epoch in enumerate(range(self.epochs)):
-            if self.use_es and ((i+1) % 25) == 0:
+            if self.use_es is not None and ((i+1) % 25) == 0:
                 print("~~~~ Evolutionary Strategy Optimization ~~~~")
-                # es on value layer
-                es_value = EA(self, True, True, 100, 5, 40, 65, es_rec, es_mut, es_sel, es_eval, 1)
-                new_weights, l_p, l_v, r = es_value.run() 
-                for name, params in self.model.state_dict().items():
-                    if "value_layer" in name:
-                        if params.numel() == 1:
-                            weights = torch.tensor(new_weights[-1:])
-                        else:
-                            weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
-                        self.model.load_state_dict({name: weights}, strict=False)
-                # es on policy layer
-                # es_policy = EA(self, False, True, 15, 1, 2, 130, es_rec, es_mut, es_sel, es_eval, 1)
-                # new_weights, l_p, l_v, r = es_policy.run()
-                # for name, params in self.model.state_dict().items():
-                #     if "policy_layer" in name:
-                #         if params.numel() == 2:
-                #             weights = torch.tensor(new_weights[-2:])
-                #         else:
-                #             weights = torch.tensor(new_weights[:-2].reshape((2, 64)))
-                #         self.model.load_state_dict({name: weights}, strict=False)
+                if self.use_es in [0, 1]:
+                    # es on value layer
+                    es_value = EA(self, True, True, 100, 2, 4, 65, es_rec, es_mut, es_sel, es_eval, 1)
+                    new_weights, l_p, l_v, r = es_value.run()
+                    for name, params in self.model.state_dict().items():
+                        if "value_layer" in name:
+                            if params.numel() == 1:
+                                weights = torch.tensor(new_weights[-1:])
+                            else:
+                                weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
+                            self.model.load_state_dict({name: weights}, strict=False)
+                
+                if self.use_es == 1:
+                    # es on policy layer
+                    es_policy = EA(self, False, True, 15, 1, 2, 130, es_rec, es_mut, es_sel, es_eval, 1)
+                    new_weights, l_p, l_v, r = es_policy.run()
+                    for name, params in self.model.state_dict().items():
+                        if "policy_layer" in name:
+                            if params.numel() == 2:
+                                weights = torch.tensor(new_weights[-2:])
+                            else:
+                                weights = torch.tensor(new_weights[:-2].reshape((2, 64)))
+                            self.model.load_state_dict({name: weights}, strict=False)
+                
+                elif self.use_es == 2:
+                    # TODO finish the for loop
+                    # es on value layer
+                    es_value = EA(self, True, True, 100, 5, 40, num_params, es_rec, es_mut, es_sel, es_eval, 1)
+                    new_weights, l_p, l_v, r = es_value.run() 
+                    for name, params in self.model.state_dict().items():
+                        if "value_layer" in name:
+                            if params.numel() == 1:
+                                weights = torch.tensor(new_weights[-1:])
+                            else:
+                                weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
+                            self.model.load_state_dict({name: weights}, strict=False)
+                
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
                 l_p, l_v, r = self.train_(*self.epoch())

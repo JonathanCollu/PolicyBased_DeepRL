@@ -27,7 +27,7 @@ def main():
     parser.add_argument('-baseline', action='store_true')
     parser.add_argument('-entropy', action='store_true')
     parser.add_argument('-entropy_factor', action='store', type=float, default=0.2)
-    parser.add_argument('-use_es', action='store_true')
+    parser.add_argument('-use_es', action='store', type=int, default=0)
     args = parser.parse_args()
 
     optimizers = {  'adam': torch.optim.Adam,

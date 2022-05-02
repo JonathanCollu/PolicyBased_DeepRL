@@ -40,6 +40,6 @@ class CommaSelection(Selection):
         parents.individuals = offspring.individuals[sorted_ind]
         parents.sigmas = offspring.sigmas[sorted_ind]
         parents.fitnesses = offspring.fitnesses[sorted_ind]
-        parents.fitnesses = offspring.rewards[sorted_ind]
+        parents.rewards = offspring.rewards[sorted_ind]
         if parents.mutation.__class__.__name__ == "Correlated":
                 parents.alphas = offspring.alphas[sorted_ind]

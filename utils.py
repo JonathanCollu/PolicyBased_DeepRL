@@ -58,7 +58,7 @@ def average_over_repetitions(
         entropy_factor = 0.2,
         model_v=None, 
         optimizer_v = None,
-        use_es = False,
+        use_es = None,
         run_name = None, 
         device = None,
         n_repetitions=10,

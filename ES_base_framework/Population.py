@@ -8,13 +8,16 @@ class Population:
             - input_ : path specifing the location of the input image
             - mutation : defines the mutation to be used in order to initialize parameters
     """
-    def __init__(self, pop_size, ind_dim, mutation):
+    def __init__(self, pop_size, ind_dim, mutation, init_parent=None):
         self.mutation = mutation
         self.pop_size = pop_size
         self.ind_dim = ind_dim
-
+        self.init_parent = init_parent
         # initialize individual values
-        self.individuals = np.random.uniform(0, 1, size=(self.pop_size, self.ind_dim))
+        if self.init_parent is not None:
+            self.individuals = np.repeat(np.expand_dims(init_parent, axis=0), self.pop_size, axis=0)
+        else:
+            self.individuals = np.random.uniform(0, 1, size=(self.pop_size, self.ind_dim))
         # initialize fitnesses
         self.fitnesses = []
         # initialize rewards
