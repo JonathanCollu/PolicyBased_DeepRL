@@ -43,19 +43,6 @@ class PolicyBased:
         if self.model_v is not None:
             self.model_v.to(device)
 
-    def load_weights_to_model(self, layers_shape, weights, mode="full"):
-        i = 0
-        for name, _ in self.model.state_dict().items():
-            if mode == "value" and "value_layer" not in name:
-                continue
-            elif mode == "policy" and "policy_layer" not in name:
-                continue
-            ind_i = sum([np.prod(layers_shape[j]) for j in range(i)])
-            inf_f = ind_i + np.prod(layers_shape[i])
-            params = torch.tensor(weights[ind_i:inf_f].reshape(layers_shape[i]))
-            self.model.load_state_dict({name: params}, strict=False)
-            i += 1
-
     def __call__(self):
         rewards = []
         losses_p = []
@@ -63,44 +50,42 @@ class PolicyBased:
         best_r_ep = 0
         best_avg = 0
         best_ep = 0
+
         # es configurations
         es_rec = Recombination.Discrete()
         es_mut = Mutation.IndividualSigma()
         es_sel = Selection.PlusSelection()
         es_eval = self.__class__.epoch
-        num_params = sum(param.numel() for param in self.model.parameters())
+        n_params_p = sum(param.numel() for param in self.model.parameters())
+        if self.model_v is not None:
+            n_params_v = sum(param.numel() for param in self.model_v.parameters())
+        
         # start training
         for i, epoch in enumerate(range(self.epochs)):
-            if i < 2 or self.use_es is not None and ((i+1) % 50) == 0:
+            # evolutionary strategy
+            if self.use_es is not None and (i % 50) == 0:
                 print("~~~~ Evolutionary Strategy Optimization ~~~~")
                 if self.use_es in [0, 1]:
-                    # es on value layer
-                    print("Value layer mode")
-                    es_value = EA(self, "value", True, 50, 2, 4, 65, es_rec, es_mut, es_sel, es_eval, 1)
-                    new_weights, l_p, l_v, r = es_value.run()
-                    self.load_weights_to_model(es_value.layers_shape, new_weights, "value")
-                
+                    # es on value model
+                    print("Value net mode")
+                    es_value = EA(self, "value", True, 50, 2, 4, n_params_v, es_rec, es_mut, es_sel, es_eval, 1)
+                    l_p, l_v, r = es_value.run()
+
                 if self.use_es == 1:
-                    # es on policy layer
-                    print("Policy layer mode")
-                    es_policy = EA(self, "policy", True, 50, 2, 4, 130, es_rec, es_mut, es_sel, es_eval, 1)
-                    new_weights, l_p, l_v, r = es_policy.run()
-                    self.load_weights_to_model(es_policy.layers_shape, new_weights, "policy")
-                
-                elif self.use_es == 2:
-                    # es on the full model
-                    print("Full model mode")
-                    es_full = EA(self, "full", True, 100, 5, 40, num_params, es_rec, es_mut, es_sel, es_eval, 1)
-                    new_weights, l_p, l_v, r = es_full.run() 
-                    self.load_weights_to_model(es_full.layers_shape, new_weights)
-                
+                    # es on policy model
+                    print("Policy net mode")
+                    es_policy = EA(self, "policy", True, 50, 2, 4, n_params_p, es_rec, es_mut, es_sel, es_eval, 1)
+                    l_p, l_v, r = es_policy.run()
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            # reinforcement learning
             else:
                 l_p, l_v, r = self.train_(*self.epoch())
+
             losses_p.append(l_p)
             losses_v.append(l_v)
             rewards.append(r)
             print(f"[{epoch+1}] Epoch mean loss (policy): {round(l_p, 4)} | Epoch mean loss (value): {round(l_v, 4)} | Epoch mean reward: {r}")
+            
             if rewards[-1] >= best_r_ep:
                 best_r_ep = rewards[-1]
                 print("New max number of steps in episode:", best_r_ep)
@@ -119,9 +104,11 @@ class PolicyBased:
                         # save model
                         torch.save(self.model.state_dict(), f"{self.run_name}_{epoch}_weights.pt")
                         best_ep = epoch
+        
         if self.run_name is not None:
             # save steps per episode
             np.save(self.run_name, np.array([losses_p, losses_v, rewards]))
+
         return rewards
 
     def evaluate(self, trials):

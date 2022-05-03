@@ -69,14 +69,14 @@ class Population:
             best_fitness, best_index = self.max_fitness()
         return best_fitness, best_index
 
-    def evaluate(self, evaluation, rl_alg, layers_shape, mode):
+    def evaluate(self, es):
         """ Evaluate the current population
         """
         self.fitnesses = []
         self.rewards = []
         for ind in self.individuals:
-            rl_alg.load_weights_to_model(layers_shape, ind, mode)
-            l_p, l_v, r = evaluation(rl_alg)
+            es.load_weights_to_model(ind)
+            l_p, l_v, r = es.evaluation(es.rl_alg)
             l_p, l_v = l_p.item(), l_v.item()
             self.fitnesses.append(-r)
             self.l_p.append(l_p)

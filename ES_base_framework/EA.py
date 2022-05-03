@@ -24,21 +24,16 @@ class EA:
         self.evaluation = evaluation
         self.verbose=verbose
 
-        # load initial parent from the weights of the model
+        # load initial parent as the current weights of the policy/value net
         self.layers_shape = []
         init_parent = []
-        for name, params in self.rl_alg.model.state_dict().items():
-            append = False
-            if self.rl_alg.use_es == 2:
-                append = True
-            else:  # use_es in [0, 1]
-                if self.mode == "value" and "value_layer" in name:
-                    append = True
-                elif self.mode == "policy" and "policy_layer" in name:
-                    append = True
-            if append:
-                self.layers_shape.append(list(params.shape))
-                init_parent.append(params.cpu().numpy().flatten())
+        if self.mode == "policy":
+            self.model = self.rl_alg.model
+        else:
+            self.model = self.rl_alg.model_v
+        for _, params in self.model.state_dict().items():
+            self.layers_shape.append(list(params.shape))
+            init_parent.append(params.cpu().numpy().flatten())
         init_parent = np.hstack(init_parent)
         
         self.parents = Population(self.parents_size,
@@ -63,7 +58,7 @@ class EA:
         gen_succ = 0
 
         # Initial parents evaluation step
-        self.parents.evaluate(self.evaluation, self.rl_alg, self.layers_shape, self.mode)
+        self.parents.evaluate(self)
         best_eval, best_index = self.parents.best_fitness(self.minimize)
         best_indiv = self.parents.individuals[best_index]
         best_l_p = self.parents.l_p[best_index]
@@ -81,7 +76,7 @@ class EA:
             self.mutation(self.offspring, gen_succ, gen_tot)
 
             # Evaluate offspring population
-            self.offspring.evaluate(self.evaluation, self.rl_alg, self.layers_shape, self.mode)
+            self.offspring.evaluate(self)
             curr_budget += self.offspring_size
 
             # Next generation parents selection
@@ -107,4 +102,15 @@ class EA:
                     f" | Policy loss: {round(best_l_p, 2)} | Value loss: {round(best_l_v, 2)}" + \
                     f" | P_succ: {round(gen_succ/gen_tot, 2)}")
 
-        return best_indiv, best_l_p, best_l_v, -best_eval
+        # load best individual as weights of the model
+        self.load_weights_to_model(best_indiv)
+        return best_l_p, best_l_v, -best_eval
+
+    def load_weights_to_model(self, weights):
+        i = 0
+        for name, _ in self.model.state_dict().items():
+            ind_i = sum([np.prod(self.layers_shape[j]) for j in range(i)])
+            inf_f = ind_i + np.prod(self.layers_shape[i])
+            params = torch.tensor(weights[ind_i:inf_f].reshape(self.layers_shape[i]))
+            self.model.load_state_dict({name: params}, strict=False)
+            i += 1

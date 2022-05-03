@@ -27,7 +27,7 @@ def main():
     parser.add_argument('-baseline', action='store_true')
     parser.add_argument('-entropy', action='store_true')
     parser.add_argument('-entropy_factor', action='store', type=float, default=0.2)
-    parser.add_argument('-use_es', action='store', type=int, default=0)
+    parser.add_argument('-use_es', action='store', type=int, default=None)
     args = parser.parse_args()
 
     optimizers = {  'adam': torch.optim.Adam,
@@ -40,10 +40,10 @@ def main():
 
     env = gym.make("CartPole-v1")
     
-    mlp_policy = MLP(4, 2, quantum=args.quantum)
+    mlp_policy = ActorCritic(4, 2, False, quantum=args.quantum)
     opt_policy = optimizers[args.optimizer](mlp_policy.parameters(), args.optim_lr)
     if args.baseline or args.alg == "AC_bootstrap":
-        mlp_value = deepcopy(mlp_policy)
+        mlp_value = ActorCritic(4, 2, True)
         opt_value = optimizers[args.optimizer_v](mlp_value.parameters(), args.optim_lr_v)
     else:
         mlp_value = None
@@ -64,7 +64,7 @@ def main():
         n_repetitions=n_repetitions, smoothing_window=smoothing_window)
     Plot.add_curve(l_c,label=r'label')
     Plot.add_hline(optimum, label="optimum")
-    Plot.save("plots/" + args.alg + ".png")
+    Plot.save("plots/" + args.run_name + ".png")
 
     if args.evaluate:
         from time import sleep

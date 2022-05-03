@@ -36,7 +36,7 @@ class Reinforce(PB):
             for t in range(len(h0) - 2, -1, -1):
                 R = h0[t][2] + self.gamma * R
                 if self.model_v is not None:
-                    v = self.model_v.forward(h0[t][0], self.device, True)
+                    v = self.model_v.forward(h0[t][0], self.device)
                     loss_value += torch.square(R - v)
                     v = v.detach()
                 else:

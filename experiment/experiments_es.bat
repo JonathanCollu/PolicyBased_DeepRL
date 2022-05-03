@@ -1,5 +1,5 @@
 python experiments.py ^
--device cuda ^
+-device cpu ^
 -run_name trial ^
 -optimizer adam ^
 -optim_lr 1e-3 ^
