@@ -66,8 +66,7 @@ class EA:
         self.parents.evaluate(self.evaluation, self.rl_alg, self.layers_shape, self.mode)
         best_eval, best_index = self.parents.best_fitness(self.minimize)
         best_indiv = self.parents.individuals[best_index]
-        best_l_p = self.parents.l_p[best_index]
-        best_l_v = self.parents.l_v[best_index]
+        best_rew = self.parents.rewards[best_index]
         curr_budget += self.parents_size
 
         while curr_budget < self.budget:
@@ -100,11 +99,9 @@ class EA:
                 gen_succ += 1
                 best_indiv = self.parents.individuals[0]
                 best_eval = curr_best_eval
-                best_l_p = self.parents.l_p[0]
-                best_l_v = self.parents.l_v[0]
+                best_rew = self.parents.rewards[0]
                 if self.verbose > 0:
-                    print(f"[{curr_budget}/{self.budget}] New best mean reward: {-best_eval}" + \
-                    f" | Policy loss: {round(best_l_p, 2)} | Value loss: {round(best_l_v, 2)}" + \
-                    f" | P_succ: {round(gen_succ/gen_tot, 2)}")
+                    print(f"[{curr_budget}/{self.budget}] New best {self.mode} loss: {round(best_eval, 2)}" + \
+                    f" | Mean reward: {best_rew} | P_succ: {round(gen_succ/gen_tot, 2)}")
 
-        return best_indiv, best_l_p, best_l_v, -best_eval
+        return best_indiv, best_eval, self.parents.alt_loss, best_rew

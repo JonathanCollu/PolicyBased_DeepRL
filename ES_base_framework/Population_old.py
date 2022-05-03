@@ -20,10 +20,10 @@ class Population:
             self.individuals = np.random.uniform(0, 1, size=(self.pop_size, self.ind_dim))
         # initialize fitnesses
         self.fitnesses = []
-        # initialize policy loss
-        self.l_p = []
-        # initialize value loss
-        self.l_v = []
+        # initialize rewards
+        self.rewards = []
+        # loss of value/policy net (the one not optimized)
+        self.alt_loss = None
         # initialize sigmas
         self.init_sigmas()
         # initialize alphas if necessary
@@ -78,6 +78,6 @@ class Population:
             rl_alg.load_weights_to_model(layers_shape, ind, mode)
             l_p, l_v, r = evaluation(rl_alg)
             l_p, l_v = l_p.item(), l_v.item()
-            self.fitnesses.append(-r)
-            self.l_p.append(l_p)
-            self.l_v.append(l_v)
+            if self.alt_loss is None: self.alt_loss = l_v if mode == "value" else l_p
+            self.fitnesses.append(l_v if mode == "value" else l_p)
+            self.rewards.append(r)

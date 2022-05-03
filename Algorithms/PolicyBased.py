@@ -43,6 +43,19 @@ class PolicyBased:
         if self.model_v is not None:
             self.model_v.to(device)
 
+    def load_weights_to_model(self, layers_shape, weights, mode="full"):
+        i = 0
+        for name, _ in self.model.state_dict().items():
+            if mode == "value" and "value_layer" not in name:
+                continue
+            elif mode == "policy" and "policy_layer" not in name:
+                continue
+            ind_i = sum([np.prod(layers_shape[j]) for j in range(i)])
+            inf_f = ind_i + np.prod(layers_shape[i])
+            params = torch.tensor(weights[ind_i:inf_f].reshape(layers_shape[i]))
+            self.model.load_state_dict({name: params}, strict=False)
+            i += 1
+
     def __call__(self):
         rewards = []
         losses_p = []
@@ -58,44 +71,28 @@ class PolicyBased:
         num_params = sum(param.numel() for param in self.model.parameters())
         # start training
         for i, epoch in enumerate(range(self.epochs)):
-            if self.use_es is not None and ((i+1) % 25) == 0:
+            if i < 2 or self.use_es is not None and ((i+1) % 50) == 0:
                 print("~~~~ Evolutionary Strategy Optimization ~~~~")
                 if self.use_es in [0, 1]:
                     # es on value layer
-                    es_value = EA(self, True, True, 100, 2, 4, 65, es_rec, es_mut, es_sel, es_eval, 1)
+                    print("Value layer mode")
+                    es_value = EA(self, "value", True, 50, 2, 4, 65, es_rec, es_mut, es_sel, es_eval, 1)
                     new_weights, l_p, l_v, r = es_value.run()
-                    for name, params in self.model.state_dict().items():
-                        if "value_layer" in name:
-                            if params.numel() == 1:
-                                weights = torch.tensor(new_weights[-1:])
-                            else:
-                                weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
-                            self.model.load_state_dict({name: weights}, strict=False)
+                    self.load_weights_to_model(es_value.layers_shape, new_weights, "value")
                 
                 if self.use_es == 1:
                     # es on policy layer
-                    es_policy = EA(self, False, True, 15, 1, 2, 130, es_rec, es_mut, es_sel, es_eval, 1)
+                    print("Policy layer mode")
+                    es_policy = EA(self, "policy", True, 50, 2, 4, 130, es_rec, es_mut, es_sel, es_eval, 1)
                     new_weights, l_p, l_v, r = es_policy.run()
-                    for name, params in self.model.state_dict().items():
-                        if "policy_layer" in name:
-                            if params.numel() == 2:
-                                weights = torch.tensor(new_weights[-2:])
-                            else:
-                                weights = torch.tensor(new_weights[:-2].reshape((2, 64)))
-                            self.model.load_state_dict({name: weights}, strict=False)
+                    self.load_weights_to_model(es_policy.layers_shape, new_weights, "policy")
                 
                 elif self.use_es == 2:
-                    # TODO finish the for loop
-                    # es on value layer
-                    es_value = EA(self, True, True, 100, 5, 40, num_params, es_rec, es_mut, es_sel, es_eval, 1)
-                    new_weights, l_p, l_v, r = es_value.run() 
-                    for name, params in self.model.state_dict().items():
-                        if "value_layer" in name:
-                            if params.numel() == 1:
-                                weights = torch.tensor(new_weights[-1:])
-                            else:
-                                weights = torch.tensor(new_weights[:-1].reshape((1, 64)))
-                            self.model.load_state_dict({name: weights}, strict=False)
+                    # es on the full model
+                    print("Full model mode")
+                    es_full = EA(self, "full", True, 100, 5, 40, num_params, es_rec, es_mut, es_sel, es_eval, 1)
+                    new_weights, l_p, l_v, r = es_full.run() 
+                    self.load_weights_to_model(es_full.layers_shape, new_weights)
                 
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
