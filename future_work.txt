@@ -1,12 +1,16 @@
 TODO:
 
 EXP 1:
-reinf
-reinf [base]
-ac [boot]
-ac [boot + base]
+reinf .
+reinf [base] .
+reinf [entr] .
+reinf [base + entr] .
+
+ac (n=50,125,250) .
+ac [entr] 
+ac [base] .
+ac [base + entr] 
 
 EXP 2:
-best_exp1 [entropy reg]
 best_exp1 [quantum]
 best_exp1 [es]

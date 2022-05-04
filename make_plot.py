@@ -1,24 +1,27 @@
 from utils import *
+import numpy as np
 
 plot_name = "ac_n"
-plot_title = "ActorCritic with different depth"
+plot_title = "ActorCritic with different n"
 
 optimum = 500
 repetitions = 3
+run_names = [("ac_n50", "n=50"), ("ac_n125", "n=125"), ("ac_n250", "n=250")]
 
-Plot = LearningCurvePlot(title = plot_title)
+plot = LearningCurvePlot(title = plot_title)
 
-curve = None
-for name in ["ac_n50", "ac_n100", "ac_n200"]:
-    c = np.load("exp_results/" + name + ".npy")[2]
-    if curve is None:
-        curve = c
-    else:
-        curve += c
-curve /= repetitions
-curve = smooth(curve, 35, 1)
-Plot.add_curve(curve, label=r"label")
+for name, label in run_names:
+    curve = None
+    for i in range(repetitions):
+        c = np.load(f"exp_results/{name}_{i}.npy")[2]
+        if curve is None:
+            curve = c
+        else:
+            curve += c
+    curve /= repetitions
+    curve = smooth(curve, 35, 1)
+    plot.add_curve(curve, label=label)
 
-Plot.add_hline(optimum, label="optimum")
+plot.add_hline(optimum, label="optimum")
 
-Plot.save("plots/" + plot_name + ".png")
+plot.save("plots/" + plot_name + ".png")
