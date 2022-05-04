@@ -106,7 +106,7 @@ class PolicyBased:
                         best_ep = epoch
         
         if self.run_name is not None:
-            # save steps per episode
+            # save losses and rewards
             np.save(self.run_name, np.array([losses_p, losses_v, rewards]))
 
         return rewards
@@ -128,11 +128,9 @@ class PolicyBased:
     def select_action(self, s):
         # get the probability distribution of the actions
         dist = self.model.forward(s, self.device)
-
         # sample action from distribution
         dist = Categorical(dist)
         action = dist.sample()
-
         #return action and actions distribution
         return action, dist
 

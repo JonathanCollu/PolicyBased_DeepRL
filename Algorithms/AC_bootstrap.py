@@ -9,9 +9,9 @@ class ACBootstrap(PB):
             - n : estimation depth
     """
     def __init__(
-            self, env, model, optimizer, epochs,
-            M, T, n, baseline_sub, entropy_reg, entropy_factor, 
-            model_v, optimizer_v, use_es, run_name, device):
+            self, env, model, optimizer, model_v, optimizer_v, 
+            epochs, M, T, n, baseline_sub, entropy_reg, entropy_factor, 
+            use_es, run_name, device):
 
         self.env = env
         self.model = model

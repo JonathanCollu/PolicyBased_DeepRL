@@ -10,11 +10,12 @@ def argmax(x):
     except:
         return torch.argmax(x)
 
-class ActorCritic(nn.Module):
+class MLP(nn.Module):
     """ Simple multi-layer perceptron
+        Can be used as policy or value network
     """
     def __init__(self, input_dim, output_dim, value=False, quantum=False, shots=50):
-        super(ActorCritic, self).__init__()
+        super(MLP, self).__init__()
         self.quantum = quantum
         self.value = value
 

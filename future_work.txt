@@ -1,8 +1,4 @@
 TODO:
-- add es
-- add device configurations
-- add training evals for saving best weights
-- add save of loss
 
 EXP 1:
 reinf

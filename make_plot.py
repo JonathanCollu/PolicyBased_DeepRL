@@ -1,13 +1,16 @@
 from utils import *
 
+plot_name = "ac_n"
+plot_title = "ActorCritic with different depth"
+
 optimum = 500
 repetitions = 3
 
-Plot = LearningCurvePlot(title = "test")
+Plot = LearningCurvePlot(title = plot_title)
 
 curve = None
-for i in range(repetitions):
-    c = np.load("exp_results/trial_" + str(i+1) + ".npy")[2]
+for name in ["ac_n50", "ac_n100", "ac_n200"]:
+    c = np.load("exp_results/" + name + ".npy")[2]
     if curve is None:
         curve = c
     else:
@@ -18,4 +21,4 @@ Plot.add_curve(curve, label=r"label")
 
 Plot.add_hline(optimum, label="optimum")
 
-Plot.save("plots/" + "test" + ".png")
+Plot.save("plots/" + plot_name + ".png")

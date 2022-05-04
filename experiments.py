@@ -1,8 +1,11 @@
+import time
 import argparse
 import torch
 import gym
 from utils import *
 from Model import *
+from Algorithms.Reinforce import Reinforce
+from Algorithms.AC_bootstrap import ACBootstrap
 
 def main():
     parser = argparse.ArgumentParser()
@@ -35,39 +38,60 @@ def main():
                     'rms': torch.optim.RMSprop
                 }
 
-    n_repetitions = 1
-    smoothing_window = 3
-
     env = gym.make("CartPole-v1")
-    
-    mlp_policy = ActorCritic(4, 2, False, quantum=args.quantum)
-    opt_policy = optimizers[args.optimizer](mlp_policy.parameters(), args.optim_lr)
-    if args.baseline or args.alg == "AC_bootstrap":
-        mlp_value = ActorCritic(4, 2, True)
-        opt_value = optimizers[args.optimizer_v](mlp_value.parameters(), args.optim_lr_v)
-    else:
-        mlp_value = None
-        opt_value = None
-    
-    run_name = "exp_results/" + args.run_name
 
+    run_name = "exp_results/" + args.run_name
     optimum = 500
 
-    Plot = LearningCurvePlot(title = args.alg.upper())
+    n_repetitions = 5
 
-    l_c = average_over_repetitions(
-        args.alg, env, mlp_policy, opt_policy, epochs=args.epochs,
-        M=args.traces, T=args.trace_len, gamma=args.gamma, n=args.n,
-        baseline_sub=args.baseline, entropy_reg=args.entropy,
-        entropy_factor=args.entropy_factor, model_v=mlp_value,
-        optimizer_v=opt_value, use_es=args.use_es, run_name=run_name, device=args.device,
-        n_repetitions=n_repetitions, smoothing_window=smoothing_window)
-    Plot.add_curve(l_c,label=r'label')
-    Plot.add_hline(optimum, label="optimum")
-    Plot.save("plots/" + args.run_name + ".png")
+    # instantiate plot and add optimum line
+    plot = LearningCurvePlot(title = args.alg.upper())
+    plot.add_hline(optimum, label="optimum")
+    
+    # run algorithm for n_repetitions times
+    curve = None
+    for i in range(n_repetitions):
+        # instantiate models
+        mlp_policy = MLP(4, 2, False, quantum=args.quantum)
+        opt_policy = optimizers[args.optimizer](mlp_policy.parameters(), args.optim_lr)
+        if args.baseline or args.alg == "AC_bootstrap":
+            mlp_value = MLP(4, 2, True)
+            opt_value = optimizers[args.optimizer_v](mlp_value.parameters(), args.optim_lr_v)
+        else:
+            mlp_value = None
+            opt_value = None
+
+        # instantiate algorithm
+        if args.alg == "reinforce":
+            alg = Reinforce(env, mlp_policy, opt_policy, mlp_value, opt_value, args.epochs, args.traces, args.gamma,
+                args.entropy, args.entropy_factor, args.use_es, run_name+str(i), args.device)
+        elif args.alg == "AC_bootstrap":
+            alg = ACBootstrap(env, mlp_policy, opt_policy, mlp_value, opt_value, args.epochs, args.traces, args.trace_len,
+                args.n, args.baseline, args.entropy, args.entropy_factor, args.use_es, run_name+str(i), args.device)
+        else:
+            print("Please select a valid model")
+        
+        # run and add rewards to curve
+        now = time.time()
+        rewards = np.array(alg())
+        print("Running one setting takes {} minutes".format(round((time.time()-now)/60, 2)))    
+        if curve is None:
+            curve = rewards
+        else:
+            curve += rewards
+            
+    # average curve over repetitions
+    curve /= n_repetitions
+    
+    # smooth curve of average rewards and add to plot
+    curve = smooth(curve, 35, 1)
+    plot.add_curve(curve, label=r"label")
+
+    # save plot
+    plot.save("plots/" + args.run_name + ".png")
 
     if args.evaluate:
-        from time import sleep
         done = False
         s = env.reset()
         env.render()
@@ -78,7 +102,7 @@ def main():
                 s_next, _, done, _ = env.step(int(argmax(mlp_policy.forward(s, args.device))))
                 s = s_next
             env.render()
-            sleep(0.1)
+            time.sleep(0.1)
 
     env.close()
 

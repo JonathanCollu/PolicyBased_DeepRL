@@ -4,9 +4,9 @@ from Algorithms.PolicyBased import PolicyBased as PB
 
 class Reinforce(PB):
     def __init__(
-            self, env, model, optimizer, epochs, M,
-            gamma, entropy_reg, entropy_factor,
-            model_v, optimizer_v, use_es, run_name, device):
+            self, env, model, optimizer, model_v, optimizer_v,
+            epochs, M, gamma, entropy_reg, entropy_factor,
+            use_es, run_name, device):
 
         self.env = env
         self.model = model
