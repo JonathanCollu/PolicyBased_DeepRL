@@ -157,6 +157,8 @@ class PolicyBased:
         # compute gradient of loss
         opt.zero_grad()
         loss.backward()
+        # clip gradient
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 10)
         # update weigths
         opt.step()
 

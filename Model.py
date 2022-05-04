@@ -22,25 +22,25 @@ class MLP(nn.Module):
         self.hidden_layers = nn.Sequential(
                 nn.Linear(input_dim, 64),
                 nn.ReLU(),
-                nn.Linear(64, 64),
+                nn.Linear(64, 8),
                 nn.ReLU()
             )
 
         if self.value:
             self.value_layer = nn.Sequential(
-                nn.Linear(64, 1),
+                nn.Linear(8, 1),
                 nn.ReLU()
             )
         else:
             if self.quantum:
                 self.quantum_layer = nn.Sequential(
-                    nn.Linear(64, output_dim),
+                    nn.Linear(8, output_dim),
                     Hybrid(int(np.log2(output_dim)), shots), 
                     nn.Softmax(dim=0)
                 )
             else:
                 self.policy_layer = nn.Sequential(
-                    nn.Linear(64, output_dim),
+                    nn.Linear(8, output_dim),
                     nn.Softmax(dim=1)
                 )
 
