@@ -65,10 +65,10 @@ def main():
         # instantiate algorithm
         if args.alg == "reinforce":
             alg = Reinforce(env, mlp_policy, opt_policy, mlp_value, opt_value, args.epochs, args.traces, args.gamma,
-                args.entropy, args.entropy_factor, args.use_es, run_name+str(i), args.device)
+                args.entropy, args.entropy_factor, args.use_es, run_name+"_"+str(i), args.device)
         elif args.alg == "AC_bootstrap":
             alg = ACBootstrap(env, mlp_policy, opt_policy, mlp_value, opt_value, args.epochs, args.traces, args.trace_len,
-                args.n, args.baseline, args.entropy, args.entropy_factor, args.use_es, run_name+str(i), args.device)
+                args.n, args.baseline, args.entropy, args.entropy_factor, args.use_es, run_name+"_"+str(i), args.device)
         else:
             print("Please select a valid model")
         
