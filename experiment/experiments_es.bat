@@ -12,8 +12,6 @@ python experiments.py \
 -trace_len 500 \
 -epochs 500 \
 -n 250 \
--entropy \
--entropy_factor 0.2 \
 -use_es 0 ;
 
 python experiments.py \
@@ -28,6 +26,4 @@ python experiments.py \
 -trace_len 500 \
 -epochs 500 \
 -n 250 \
--entropy \
--entropy_factor 0.2 \
 -use_es 1

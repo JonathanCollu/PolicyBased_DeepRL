@@ -6,7 +6,7 @@ plot_title = "ActorCritic"
 
 optimum = 500
 repetitions = 3
-run_names = [("ac_baseline", "baseline sub."), ("ac_entropy", "entropy reg."), ("ac_baseline_entropy", "baseline sub. and entropy reg.")]
+run_names = [("ac_n250", "naive"), ("ac_baseline", "baseline sub."), ("ac_entropy", "entropy reg."), ("ac_baseline_entropy", "baseline sub. and entropy reg.")]
 
 plot = LearningCurvePlot(title = plot_title)
 
