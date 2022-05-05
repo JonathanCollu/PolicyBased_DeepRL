@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python experiments.py \
--run_name ac_entropy_es_0 \
+-run_name ac_es_0 \
 -optimizer adam \
 -optim_lr 3e-3 \
 -optimizer_v adam \
@@ -15,7 +15,7 @@ python experiments.py \
 -use_es 0 ;
 
 python experiments.py \
--run_name ac_entropy_es_1 \
+-run_name ac_es_1 \
 -optimizer adam \
 -optim_lr 3e-3 \
 -optimizer_v adam \
