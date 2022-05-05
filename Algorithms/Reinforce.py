@@ -43,7 +43,7 @@ class Reinforce(PB):
                     v = 0
                 loss_policy += (R - v) * -h0[t][3].log_prob(h0[t][1])
                 if self.entropy_reg:
-                    loss_policy += self.entropy_factor * -torch.sum([p * torch.log(p) for p in h0[t][3].probs][0])
+                    loss_policy += self.entropy_factor * h0[t][3].entropy()
         loss_policy /= self.M
         loss_value /= self.M
         reward /= self.M
