@@ -1,12 +1,12 @@
 from utils import *
 import numpy as np
 
-plot_name = "ac_n"
-plot_title = "ActorCritic with different n"
+plot_name = "ac"
+plot_title = "ActorCritic"
 
 optimum = 500
 repetitions = 3
-run_names = [("ac_n50", "n=50"), ("ac_n125", "n=125"), ("ac_n250", "n=250")]
+run_names = [("ac_baseline", "baseline sub."), ("ac_entropy", "entropy reg."), ("ac_baseline_entropy", "baseline sub. and entropy reg.")]
 
 plot = LearningCurvePlot(title = plot_title)
 

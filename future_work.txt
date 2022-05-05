@@ -7,9 +7,9 @@ reinf [entr] .
 reinf [base + entr] .
 
 ac (n=50,125,250) .
-ac [entr] 
+ac [entr] .
 ac [base] .
-ac [base + entr] 
+ac [base + entr] .
 
 EXP 2:
 best_exp1 [quantum]

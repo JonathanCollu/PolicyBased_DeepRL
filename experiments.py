@@ -43,7 +43,7 @@ def main():
     run_name = "exp_results/" + args.run_name
     optimum = 500
 
-    n_repetitions = 2
+    n_repetitions = 3
 
     # instantiate plot and add optimum line
     plot = LearningCurvePlot(title = args.alg.upper())
