@@ -1,0 +1,88 @@
+REINFORCE RESULTS
+
+Weights: reinf_0_463_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_1_222_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_2_423_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: reinf_baseline_0_425_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_baseline_1_370_weights.pt | Reps: 100 | trials: 441.38 +- 56.95748941096333
+Weights: reinf_baseline_2_417_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: reinforce_entr0.2_0_347_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_entr0.2_1_470_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_entr0.2_2_348_weights.pt | Reps: 100 | trials: 499.5 +- 3.6013886210738213
+
+Weights: reinforce_baseline_entr0.2_0_278_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_0_198_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_0_490_weights.pt | Reps: 100 | trials: 496.97 +- 15.160775046151167
+Weights: reinforce_baseline_entr0.2_0_471_weights.pt | Reps: 100 | trials: 498.57 +- 8.692818875370635
+Weights: reinforce_baseline_entr0.2_1_246_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_1_265_weights.pt | Reps: 100 | trials: 490.81 +- 23.554912438809872
+Weights: reinforce_baseline_entr0.2_1_357_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_1_427_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_2_162_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_2_491_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_2_402_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_2_469_weights.pt | Reps: 100 | trials: 497.55 +- 13.189673991422229
+Weights: reinforce_baseline_entr0.2_3_362_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_4_132_weights.pt | Reps: 100 | trials: 489.5 +- 31.197275522070832
+Weights: reinforce_baseline_entr0.2_5_254_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: reinforce_baseline_entr0.2_es0_0_258_weights.pt | Reps: 100 | trials: 457.13 +- 47.44652885090753
+Weights: reinforce_baseline_entr0.2_es0_1_394_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_es0_2_318_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_es1_0_428_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_es1_1_391_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinforce_baseline_entr0.2_es1_2_384_weights.pt | Reps: 100 | trials: 498.73 +- 12.636340451254073
+
+Weights: reinf_es0_0_299_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_es0_1_418_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_es0_2_314_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_es1_0_276_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: reinf_es1_1_281_weights.pt | Reps: 100 | trials: 497.96 +- 11.344531722376203
+Weights: reinf_es1_2_229_weights.pt | Reps: 100 | trials: 495.9 +- 10.99863627910297
+
+Weights: reinf_es0_quantum_0_20_weights.pt | Reps: 100 | trials: 18.8 +- 9.027735042633894
+Weights: reinf_es0_quantum_0_21_weights.pt | Reps: 100 | trials: 19.23 +- 7.0453601753210595
+Weights: reinf_es0_quantum_0_31_weights.pt | Reps: 100 | trials: 20.04 +- 11.092267577010572
+Weights: reinf_es0_quantum_1_146_weights.pt | Reps: 100 | trials: 16.8 +- 7.713624310270756
+Weights: reinf_es0_quantum_2_64_weights.pt | Reps: 100 | trials: 22.62 +- 15.31324916534698
+
+
+
+ACTOR CRITIC RESULTS
+
+Weights: ac_n50_0_330_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_n50_1_164_weights.pt | Reps: 100 | trials: 443.94 +- 72.62517745245103
+Weights: ac_n50_2_94_weights.pt | Reps: 100 | trials: 294.93 +- 41.786183123132936
+
+Weights: ac_n125_0_167_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_n125_1_132_weights.pt | Reps: 100 | trials: 495.74 +- 19.300580302156717
+Weights: ac_n125_2_129_weights.pt | Reps: 100 | trials: 499.07 +- 9.253383165091568
+
+Weights: ac_n250_0_307_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_n250_1_487_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_n250_2_366_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: ac_baseline_0_262_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_baseline_1_209_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_baseline_2_164_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: ac_entropy_0_347_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_entropy_1_208_weights.pt | Reps: 100 | trials: 494.35 +- 19.66030264263498
+Weights: ac_entropy_2_312_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: ac_baseline_entropy_1_242_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_baseline_entropy_2_383_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_baseline_entropy_0_172_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: ac_es_0_0_199_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_es_0_1_448_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_es_0_2_281_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_es_1_0_259_weights.pt | Reps: 100 | trials: 498.97 +- 10.248370602198188
+Weights: ac_es_1_1_297_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+Weights: ac_es_1_2_261_weights.pt | Reps: 100 | trials: 500.0 +- 0.0
+
+Weights: ac_quantum_1_145_weights.pt | Reps: 100 | trials: 14.47 +- 4.858919633004851
+Weights: ac_quantum_0_260_weights.pt | Reps: 100 | trials: 19.39 +- 8.958677357735349
+Weights: ac_quantum_2_287_weights.pt | Reps: 100 | trials: 22.32 +- 10.79247886261539
