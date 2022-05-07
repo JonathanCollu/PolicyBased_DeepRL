@@ -1,0 +1,7 @@
+gym==0.23.1
+matplotlib==3.5.1
+numpy==1.21.5
+qiskit==0.36.1
+qiskit_terra==0.20.1
+scipy==1.8.0
+torch==1.11.0
