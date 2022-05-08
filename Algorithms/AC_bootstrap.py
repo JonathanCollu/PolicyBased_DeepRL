@@ -4,9 +4,21 @@ from Algorithms.PolicyBased import PolicyBased as PB
 
 class ACBootstrap(PB):
     """ Parameters:
-            - v_function: model in pytorch 
-            - optimzer_v : value function optimization algorithm (torch optimizer)
+            - env : Environment to train our model
+            - model : differentiable parametrized policy (model in pytorch)
+            - optimzer : policy network optimization algorithm (torch optimizer)
+            - model_v : value network (model in pytorch)
+            - optimzer_v : value network optimization algorithm (torch optimizer)
+            - epochs : number of epochs 
+            - M : number of traces per epoch
+            - T : trace length
             - n : estimation depth
+            - baseline_sub : use or not baseline subtraction
+            - entropy_reg : use or not entropy regularization
+            - entropy_factor : entropy factor
+            - use_es : flag to handle the usage of evolutionary strategies
+            - run_name : name of the run
+            - device : cuda or cpu 
     """
     def __init__(
             self, env, model, optimizer, model_v, optimizer_v, 

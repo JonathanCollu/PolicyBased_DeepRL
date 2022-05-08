@@ -11,13 +11,14 @@ import ES_base_framework.Selection as Selection
 
 class PolicyBased:
     """ Parameters:
-            - optimzer : optimization algorithm (torch optimizer)
+            - env : Environment to train our model
+            - model : differentiable parametrized policy (model in pytorch)
             - epochs : number of epochs 
             - M : number of traces per epoch
             - T : trace length
-            - gamma : discount factor
-            - model : differentiable parametrized policy (model in pytorch)
-            - env : Environment to train our model 
+            - use_es : flag to handle the usage of evolutionary strategies
+            - run_name : name of the run
+            - device : cuda or cpu 
     """
     def __init__(self, env, model, epochs, M, T, use_es, run_name, device):
         self.env = env

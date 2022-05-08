@@ -3,6 +3,21 @@ from Algorithms.PolicyBased import PolicyBased as PB
 
 
 class Reinforce(PB):
+    """ Parameters:
+            - env : Environment to train our model
+            - model : differentiable parametrized policy (model in pytorch)
+            - optimzer : policy network optimization algorithm (torch optimizer)
+            - model_v : value network (model in pytorch)
+            - optimzer_v : value network optimization algorithm (torch optimizer)
+            - epochs : number of epochs 
+            - M : number of traces per epoch
+            - gamma : discount factor
+            - entropy_reg : use or not entropy regularization
+            - entropy_factor : entropy factor
+            - use_es : flag to handle the usage of evolutionary strategies
+            - run_name : name of the run
+            - device : cuda or cpu 
+    """
     def __init__(
             self, env, model, optimizer, model_v, optimizer_v,
             epochs, M, gamma, entropy_reg, entropy_factor,

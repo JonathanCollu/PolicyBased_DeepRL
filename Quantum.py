@@ -14,11 +14,11 @@ class Ansatz():
         self.circuit = qiskit.circuit.QuantumCircuit(n_qubits)
         all_qubits = np.arange(n_qubits).tolist()
         self.theta = qiskit.circuit.Parameter('theta')
-        self.circuit.h(all_qubits)
-        self.circuit.barrier()
-        self.circuit.rz(self.theta, all_qubits)
-        self.circuit.ry(self.theta, all_qubits)
-        self.circuit.measure_all()
+        self.circuit.h(all_qubits) # add a hadamard gate to each qubit
+        self.circuit.barrier() # add barrier
+        self.circuit.rz(self.theta, all_qubits) # add a R_z gate to each qubit
+        self.circuit.ry(self.theta, all_qubits) # add a R_y gate to each qubit
+        self.circuit.measure_all() # measure all qubits
         self.backend = qiskit.Aer.get_backend('aer_simulator')
         self.shots = shots
 
