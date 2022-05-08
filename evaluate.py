@@ -5,8 +5,6 @@ import argparse
 from numpy import mean, std
 from Model import *
 
-# TODO everything
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-run_name", action="store", type=str, default=None)
