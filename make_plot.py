@@ -1,12 +1,13 @@
 from utils import *
 import numpy as np
 
-plot_name = "ac"
-plot_title = "ActorCritic"
+plot_name = "reinforce"
+plot_title = "REINFORCE and ActorCritic without bootstrap"
 
 optimum = 500
 repetitions = 3
-run_names = [("ac_n250", "naive"), ("ac_baseline", "baseline sub."), ("ac_entropy", "entropy reg."), ("ac_baseline_entropy", "baseline sub. and entropy reg.")]
+run_names = [("reinf", "REINFORCE"), ("reinf_baseline", "ActorCritic + baseline sub."), ("reinforce_entr0.2", "REINFORCE + entropy reg."), ("reinforce_baseline_entr0.2", "ActorCritic + baseline sub. + entropy reg.")]
+
 
 plot = LearningCurvePlot(title = plot_title)
 
