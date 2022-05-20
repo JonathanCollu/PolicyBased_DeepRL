@@ -52,7 +52,7 @@ class ACBootstrap(PB):
             for t in range(len(h0) - 1): # -1 for skipping last state
                 n = min(self.n, (len(h0) - 1 - t)) # to avoid indexes out of bound
                 v = self.model_v.forward(h0[t + n][0], self.device)
-                Q_n = sum([h0[t + k][2] for k in range(n - 1)]) + v
+                Q_n = sum([h0[t + k][2] for k in range(n)]) + v
                 v_pred = self.model_v.forward(h0[t][0], self.device)
                 if not self.baseline_sub:
                     loss_policy += Q_n.detach() * -h0[t][3].log_prob(h0[t][1])
