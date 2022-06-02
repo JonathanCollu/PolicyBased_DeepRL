@@ -59,8 +59,7 @@ class ACBootstrap(PB):
                 else:
                     loss_policy += (Q_n.detach() - v_pred.detach()) * -h0[t][3].log_prob(h0[t][1])
                 if self.entropy_reg:
-                    # loss_policy += self.entropy_factor * -torch.sum([p * torch.log(p) for p in h0[t][3].probs][0])
-                    loss_policy += self.entropy_factor * h0[t][3].entropy()
+                    loss_policy -= self.entropy_factor * h0[t][3].entropy()
                 loss_value += torch.square(Q_n.detach() - v_pred)
         loss_policy /= self.M
         loss_value /= self.M
