@@ -17,7 +17,7 @@ All the experiments presented in the report are fully repruducible by running th
 .It is important to run the script out of the directory `experiments` using the command above to avoid errors with absoulute and relative paths. 
 Furthermore, it is important to change the script permissions in order to make it executable as a program.
 
-# How to train a configurations
+# How to train a configuration
 `python experiment.py`
 along with the arguments that are already used in `basic_exps.sh`
 # How to evaluate a configuration
