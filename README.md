@@ -16,7 +16,7 @@ All the experiments presented in the report are fully reproducible by running th
 ``` 
 Remember to change the script permissions in order to make it executable as a program.
 
-Note: Windows users can convert the above file to a `.bat` by simply removing the shebang (first line), comments, converting "\" to "^" and deleting ";".
+Note: Windows users can convert the above file to a `.bat` by simply removing the shebang (first line), comments, converting "\\" to "^" and deleting ";".
 
 ## How to run a configuration (training)
 
