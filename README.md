@@ -24,33 +24,29 @@ Note: Windows users can convert the above file to a `.bat` by simply removing th
 python experiment.py
 ```
 from the main directory, along with the following possible arguments:
-<ul>
-<li>`-run_name`, name of your choice for the configuration </li>
-<li>`-device`, where to execute the computations (e.g. "cpu" or "cuda") </li>
-<li>`-optimizer`, choose an optimizer between "adam", "sgd" and "rms" for the policy net</li>
-<li>`-optim_lr`, learning rate of the optimizer</li>
-<li>`-optimizer_v`, choose an optimizer between "adam", "sgd" and "rms" for the value net</li>
-<li>`-optim_lr_v`, learning rate of the optimizer_v</li>
-<li>`-quantum`, use a quantum layer as an output layer for the policy network</li>
-<li>`-alg`, choose between "reinforce" and "AC_bootstrap"</li>
-<li>`-epochs`, number of epochs (i.e. updates)</li>
-<li>`-traces`, number of traces per epoch (averaged in a single update)</li>
-<li>`-trace_len`, length of a trace</li>
-<li>`-n`, number of steps for bootstrapping</li>
-<li>`-gamma`, discount factor</li>
-<li>`-baseline`, to use baseline subtraction</li>
-<li>`-entropy`, to use entropy regularization</li>
-<li>`-entropy_factor`, entropy regularization factor</li>
-<li>`-use_es`, set to 0 or 1 to use evolutionary strategies as described in the report</li>
-</ul>
+- `-run_name`: name of your choice for the configuration.
+- `-device`: where to execute the computations (e.g. "cpu" or "cuda").
+- `-optimizer`: choose an optimizer between "adam", "sgd" and "rms" for the policy net.
+- `-optim_lr`: learning rate of the optimizer.
+- `-optimizer_v`: choose an optimizer between "adam", "sgd" and "rms" for the value net.
+- `-optim_lr_v`: learning rate of the optimizer_v.
+- `-quantum`: use a quantum layer as an output layer for the policy network.
+- `-alg`: choose between "reinforce" and "AC_bootstrap".
+- `-epochs`: number of epochs (i.e. updates).
+- `-traces`: number of traces per epoch (averaged in a single update).
+- `-trace_len`: length of a trace.
+- `-n`: number of steps for bootstrapping.
+- `-gamma`: discount factor.
+- `-baseline`: to use baseline subtraction.
+- `-entropy`: to use entropy regularization.
+- `-entropy_factor`: entropy regularization factor.
+- `-use_es`: set to 0 or 1 to use evolutionary strategies as described in the report.
 
 ## How to evaluate a configuration
 Run the command below from the main directory
 `python evaluate.py`
 along with the following arguments:
-<ul>
-<li>`-run_name`, name of your choice for the configuration </li>
-<li>`-render`, to visualize the environment</li>
-<li>`-device`, to indicate where to execute the computations (e.g. "cpu" or "cuda") </li>
-<li>`-quantum`, to use a quantum layer as an output layer for the policy network</li>
-</ul>
+- `-run_name`, name of your choice for the configuration.
+- `-render`, to visualize the environment.
+- `-device`, to indicate where to execute the computations (e.g. "cpu" or "cuda").
+- `-quantum`, to use a quantum layer as an output layer for the policy network.
