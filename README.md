@@ -44,7 +44,9 @@ from the main directory, along with the following possible arguments:
 
 ## How to evaluate a configuration
 Run the command below from the main directory
-`python evaluate.py`
+```
+python evaluate.py
+```
 along with the following arguments:
 - `-run_name`, name of your choice for the configuration.
 - `-render`, to visualize the environment.
