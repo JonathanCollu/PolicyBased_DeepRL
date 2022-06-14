@@ -1,31 +1,55 @@
-This repository contains the solution to the second assignment of the course Reinforcement Learning from Leiden Univeristy. It contains a framework for experimenting with a variety of **policy-based reinforcement learning** techniques to train agents that can solve OpenAI's environments. In our specific case we succesfully applied **REINFORCE** and **Actor-Critic** algorithms (in various configurations) to the **"CartPole-V1"** environment.
+# Policy-based Deep Reinforcement Learning
+This repository contains the solution to the third assignment of the course Reinforcement Learning from Leiden Univeristy. It contains a framework for experimenting with different **policy-based reinforcement learning** techniques on OpenAI's Gym environments. In our specific case we succesfully applied **REINFORCE** and **Actor-Critic** algorithms (in various configurations) to the **"CartPole-V1"** environment. For a detailed description of the methodologies used and the experiments carried out, please refer to the <a href=https://github.com/JonathanCollu/RL_A3/blob/main/report_A3.pdf>full report</a>.
 
-# Requirements
- To run the available scripts and algorithm configurations, a `Python 3` environment is required, together with the required packages, specified in the `requirements.txt` file, in the main directory. In order to install the requirements, run the following command from the main directory: 
+## Requirements
+To run the available scripts, a `Python 3` environment is required, together with the packages specified in the `requirements.txt` file, in the main directory. In order to install the requirements, run the following command on the `Python 3` environment:
  
  ```
  pip install -r requirements.txt
  ````
 
-# How to train all the configurations
-
-All the experiments presented in the report are fully repruducible by running the following command from the main folder of the repository:
+## How to train all the configurations
+All the experiments presented in the report are fully reproducible by running the following command from the main folder of the repository:
 
 ```
-./experiments/basic_exps.sh
+./experiment/basic_exps.sh
 ``` 
-.It is important to run the script out of the directory `experiments` using the command above to avoid errors with absoulute and relative paths. 
-Furthermore, it is important to change the script permissions in order to make it executable as a program.
+Remember to change the script permissions in order to make it executable as a program.
 
-# How to train a configuration
-`python experiment.py`
-along with the arguments that are already used in `basic_exps.sh`
-# How to evaluate a configuration
+Note: Windows users can convert the above file to a `.bat` by simply removing the shebang (first line), comments, converting "\" to "^" and deleting ";".
+
+## How to run a configuration (training)
+
+```
+python experiment.py
+```
+from the main directory, along with the following possible arguments:
+<ul>
+<li>`-run_name`, name of your choice for the configuration </li>
+<li>`-device`, where to execute the computations (e.g. "cpu" or "cuda") </li>
+<li>`-optimizer`, choose an optimizer between "adam", "sgd" and "rms" for the policy net</li>
+<li>`-optim_lr`, learning rate of the optimizer</li>
+<li>`-optimizer_v`, choose an optimizer between "adam", "sgd" and "rms" for the value net</li>
+<li>`-optim_lr_v`, learning rate of the optimizer_v</li>
+<li>`-quantum`, use a quantum layer as an output layer for the policy network</li>
+<li>`-alg`, choose between "reinforce" and "AC_bootstrap"</li>
+<li>`-epochs`, number of epochs (i.e. updates)</li>
+<li>`-traces`, number of traces per epoch (averaged in a single update)</li>
+<li>`-trace_len`, length of a trace</li>
+<li>`-n`, number of steps for bootstrapping</li>
+<li>`-gamma`, discount factor</li>
+<li>`-baseline`, to use baseline subtraction</li>
+<li>`-entropy`, to use entropy regularization</li>
+<li>`-entropy_factor`, entropy regularization factor</li>
+<li>`-use_es`, set to 0 or 1 to use evolutionary strategies as described in the report</li>
+</ul>
+
+## How to evaluate a configuration
 Run the command below from the main directory
 `python evaluate.py`
 along with the following arguments:
 <ul>
-<li>`-run_name`, name of the config to run </li>
+<li>`-run_name`, name of your choice for the configuration </li>
 <li>`-render`, to visualize the environment</li>
 <li>`-device`, to indicate where to execute the computations (e.g. "cpu" or "cuda") </li>
 <li>`-quantum`, to use a quantum layer as an output layer for the policy network</li>
