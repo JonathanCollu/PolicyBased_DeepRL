@@ -1,6 +1,9 @@
 # Policy-based Deep Reinforcement Learning
 This repository contains the solution to the third assignment of the course Reinforcement Learning from Leiden Univeristy. It contains a framework for experimenting with different **policy-based reinforcement learning** techniques on OpenAI's Gym environments. In our specific case we succesfully applied **REINFORCE** and **Actor-Critic** algorithms (in various configurations) to the **"CartPole-V1"** environment. For a detailed description of the methodologies used and the experiments carried out, please refer to the <a href=https://github.com/JonathanCollu/RL_A3/blob/main/report_A3.pdf>full report</a>.
 
+## Authors
+<a href="https://github.com/OhGreat">Dimitrios Ieronymakis</a>, <a href="https://github.com/JonathanCollu">Jonathan Collu</a> and <a href="https://github.com/riccardomajellaro">Riccardo Majellaro</a>
+
 ## Requirements
 To run the available scripts, a `Python 3` environment is required, together with the packages specified in the `requirements.txt` file, in the main directory. In order to install the requirements, run the following command on the `Python 3` environment:
  
